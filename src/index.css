@@ -19,6 +19,50 @@ body {
 .app {
   height: 100%;
   width: 100%;
+
+}
+
+nav {
+  height: 10%;
+  background-color: rgba(0, 0, 0, 1);
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(40, 40, 40, 1) 100%);
+  color: white;
+}
+
+nav ul {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+nav ul li {
+  font-size: 2rem;
+  list-style-type: none;
+  margin: 0 1em;
+}
+
+nav ul li:hover {
+  cursor: pointer;
+  border-bottom: 1px solid white;;
+}
+
+nav ul li.logo {
+  margin: 0;
+  width: 2em;
+  background: white;
+}
+
+.home {
+  margin-left: auto
+}
+
+.add-song {
+  margin-right: auto;
+}
+
+.cards-container {
+  height: 90%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
