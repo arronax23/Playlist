@@ -23,28 +23,97 @@ body {
 }
 
 nav {
-  height: 10%;
+  height: 20%;
   background-color: rgba(0, 0, 0, 1);
   background-image: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(40, 40, 40, 1) 100%);
-
   color: white;
+}
+
+nav.slim {
+  height: 10%;
+}
+
+@media screen and (min-width: 400px) {
+  nav {
+    height: 10%;
+  }
+}
+
+
+.bar-container {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+
+@media screen and (min-width: 400px) {
+  .bar-container {
+    display: none;
+  }
+}
+
+
+.bar-container:hover {
+  cursor: pointer;
+}
+
+.bar {
+  background-color: white;
+  height: .35em;
+  margin: .5em 0;
+  width: 2.5em;
 }
 
 nav ul {
   height: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
+
+@media screen and (min-width: 400px) {
+  nav ul {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
 
 nav ul li {
   font-size: 2rem;
   list-style-type: none;
-  margin: 0 1em;
 }
+
+@media screen and (min-width: 400px) {
+  nav ul li{
+    margin: 0 1em;
+  }
+
+}
+
+@media screen and (max-width: 400px) {
+  nav ul li.hidden {
+    display: none;
+    }
+}
+
+
 
 nav ul li:hover {
   cursor: pointer;
-  border-bottom: 1px solid white;;
+  background-color: white;
+  color: black;
+}
+
+@media screen and (min-width: 400px) {
+  nav ul li:hover {
+    background-color: unset;
+    color: white;
+    border-bottom: 1px solid white;;
+  }
+  
 }
 
 nav ul li.logo {
@@ -53,13 +122,36 @@ nav ul li.logo {
   background: white;
 }
 
+
 .home {
-  margin-left: auto
+  width: 100%;
+  border-top: 2px solid white;
+  text-align: center;
 }
 
 .add-song {
-  margin-right: auto;
+  width: 100%;
+  border-top: 2px solid white;
+  text-align: center;
 }
+
+
+@media screen and (min-width: 400px) {
+  .home {
+    width: auto;
+    margin-left: auto;
+    border-top: none;
+
+  }
+  
+  .add-song {
+    width: auto;
+    border-top: none;
+    margin-right: auto;
+  }
+  
+}
+
 
 .cards-container {
   height: 90%;
