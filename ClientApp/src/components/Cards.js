@@ -1,7 +1,9 @@
 import React from 'react'
 import Card from './Card';
+import useFetchGet from './../customHooks/useFetchGet'
 
 function Cards() {
+    const {data : songs, isPending, error, httpResposne} = useFetchGet('api/GetAllSongs');
     const author = "Coco & Breezy, Tara Carosielli";
     const title = "Just Say";
     const imageURL = "https://i.ytimg.com/vi/o0tfrCzuAAo/hq720.jpg?sqp=-oaymwE2COgCEMoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARh_IEQoEzAP&rs=AOn4CLA1Hz1kdMFuflHmzB8wbWrGBSYMTA"
@@ -12,10 +14,7 @@ function Cards() {
    
   return (
     <div className="cards-container">
-        <Card imageURL={imageURL} author={author} title={title} />
-        <Card imageURL={imageURL} author={author} title={title} />
-        <Card imageURL={imageURL2} author={author2} title={title2} />
-        <Card imageURL={imageURL2} author={author2} title={title2} />
+    {songs && songs.map(song => <Card key={song._id.increment} imgPath={song.imgPath} author={song.author} title={song.title}/>)}
   </div>
   )
 }

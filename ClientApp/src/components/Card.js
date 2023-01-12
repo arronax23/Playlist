@@ -1,13 +1,13 @@
 import React from 'react'
 
-function Card({ imageURL, author, title }) {
+function Card({ imgPath, author, title }) {
     const handleClick = () => {
         alert('cliked on a card');
     }
   return (
     <div className="card" onClick={handleClick}>
         <div className="image">
-            <img src={imageURL} />
+            <img src={`./img/${imgPath}`} />
         </div>
         <div className="author">
             {author}
