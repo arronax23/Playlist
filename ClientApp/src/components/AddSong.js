@@ -33,7 +33,7 @@ function AddSong() {
             }
             else{
 
-                fetch('api/UploadFile', {
+                fetch('https://localhost:44302/api/UploadFile', {
                     method: 'POST',
                     body: img,
                     // 👇 Set headers manually for single file upload

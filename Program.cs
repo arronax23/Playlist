@@ -19,7 +19,6 @@ app.DefineEndpoints();
 var data = new { Author = "The Weeknd", Title = "The Hills" };
 app.MapGet("/test", () => data);
 
-app.UseRouting();
 app.UseCors("corsPolicy");
 app.UseHttpsRedirection();
 app.MapControllers();
