@@ -1,5 +1,7 @@
-﻿using Playlist.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Playlist.Data;
 using Playlist.Models;
+using System.Text;
 
 namespace Playlist.Endpoints;
 
@@ -10,8 +12,8 @@ public static class Endpoints
         app.MapGet("/api/GetAllSongs", GetAllSongs);
         app.MapGet("/api/GetOneSong", GetOneSong);
         app.MapPost("/api/AddSong", AddSong);
+        //app.MapPost("/api/UploadFile", UploadFile).Accepts<IFormFile>("text/plain", new[] { "image/webp", "image/img" } );
     }
-
     public static void DefineServices(this IServiceCollection services)
     {
         services.AddSingleton<MongoDBService>();
@@ -31,5 +33,22 @@ public static class Endpoints
         mongoDBService.Insert("playlist", "song", song);
         return Results.Ok();
     }
+
+    //private static async Task<IResult> UploadFile(HttpRequest request)
+    //{
+    //    var files = request.Form.Files;
+    //    var file = request.Form.Files[0];
+    //    //using (var reader = new StreamReader(request.Body, System.Text.Encoding.UTF8))
+    //    //{
+
+    //    //    string fileContent = await reader.ReadToEndAsync();
+    //    //    File.WriteAllText("./detect.webp", fileContent, Encoding.UTF8);
+
+    //    //    string b = "aa";
+    //    //}
+
+    //    return Results.Ok();
+    //}
+
 
 }
