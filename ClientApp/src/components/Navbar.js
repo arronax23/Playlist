@@ -26,7 +26,6 @@ function Navbar() {
             <li className="logo" onClick={() => history.push('/')}><img src={logo} alt="No logo" /></li>
             <li className="home" ref={home} onClick={() => history.push('/')}>Home</li>
             <li className="add-song" ref={addSong} onClick={() => history.push('/addsong')}>Add song</li>
-            <li onClick={() => history.push('/testing')}>Testing</li>
         </ul>
   </nav>
   )

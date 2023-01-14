@@ -289,3 +289,22 @@ form button:hover {
   background: white;
   color: black;
 }
+
+input[type="file"] {
+  display: none;
+}
+
+.file-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-label:hover {
+  cursor: pointer;
+  color: #CECECE;
+}
+
+.selected-file {
+  height: 1em;
+}

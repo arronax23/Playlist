@@ -1,13 +1,19 @@
-import React, {ChangeEvent, useState}  from 'react'
+import React, {ChangeEvent, useState, useRef}  from 'react'
 import { useHistory } from 'react-router'
 
 function AddSong() {
+    const imgSelected = useRef();
+    const imgInput = useRef();
+
+    const audioSelected = useRef();
+    const audioInput = useRef();
+
     const history = useHistory();
 
     const [author, setAuthor] = useState('');
     const [title, setTitle] = useState('');
     const [img, setImg] = useState();
-    const [imgPath, setImgPath] = useState('');
+    const [imgPath, setimgPath] = useState();
     const [audio, setAudio] = useState();
     const [audioPath, setAudioPath] = useState('');
 
@@ -16,6 +22,11 @@ function AddSong() {
         console.log(img);
 
         const song = {author, title, imgPath, audioPath};
+        let formData = new FormData();
+        formData.append('img',img);
+        // formData.append('imagePath',imgPath);
+        formData.append('audio',audio);
+        // formData.append('audioPath',audioPath);
         console.log(song);
 
         fetch('api/AddSong', 
@@ -32,15 +43,10 @@ function AddSong() {
                 throw new Error("Something went wrong!");
             }
             else{
-
-                fetch('https://localhost:44302/api/UploadFile', {
+                console.log(formData);
+                fetch('api/UploadFile', {
                     method: 'POST',
-                    body: img,
-                    // 👇 Set headers manually for single file upload
-                    headers: {
-                      'content-type': img.type,
-                      'content-length': `${img.size}`, // 👈 Headers need to be a string
-                    },
+                    body: formData
                   })
                   .then(response => {
                     if (!response.ok){
@@ -62,14 +68,18 @@ function AddSong() {
     }
 
     const handleImgChange = (e) => {
-        setImg(e.target.files[0]);
         console.log(e.target.files[0]);
-        setImgPath(e.target.files[0].name);
+        setImg(e.target.files[0]);
+        setimgPath(e.target.files[0].name);
+        imgSelected.current.innerHTML = e.target.files[0].name;
+        console.log(imgSelected);
     }
 
     const handleAudioChange = (e) => {
+        console.log(e.target.files[0]);
         setAudio(e.target.files[0]);
         setAudioPath(e.target.files[0].name);
+        audioSelected.current.innerHTML = e.target.files[0].name;
     }
 
     return (
@@ -80,10 +90,20 @@ function AddSong() {
                     <input type="text" name="author" id="author" value={author} onChange={(e) => setAuthor(e.target.value)} />
                     <label htmlFor="title">Title</label>
                     <input type="text" name="title" id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                    <label htmlFor="imgPath">Image</label>
-                    <input type="file" name="img" id="img" onChange={handleImgChange} />
-                    <label htmlFor="audio">Audio</label>
-                    <input type="file" name="audio" id="audio" onChange={handleAudioChange} />
+                    <label className="file-label" htmlFor="img" onChange={handleImgChange}>
+                        <p>Image</p>
+                        <i className="fa-solid fa-file"></i>
+                        <input ref={imgInput} type="file" name="img" id="img"  />
+                        <p ref={imgSelected} className="selected-file"></p>
+                    </label>
+
+                    <label className="file-label" htmlFor="audio" onChange={handleAudioChange}>
+                        <p>Audio</p>
+                        <i className="fa-solid fa-headphones"></i>
+                        <input ref={audioInput} type="file" name="audio" id="audio"  />
+                        <p ref={audioSelected} className="selected-file"></p>
+                    </label>
+            
                     <button type="submit" >Submit</button>
                 </form>
             </div>
