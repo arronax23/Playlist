@@ -168,6 +168,7 @@ img {
 }
 
 .image {
+  max-height: 70%;
   margin-bottom: auto;
 }
 
@@ -218,6 +219,64 @@ img {
     width: 15%;
     height: 30%;
   }
+}
+
+.audio-card-container {
+  height: 90%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.audio-card {
+  width: 90%;
+  height: 50%;
+  color: white;
+  font-size: 2rem;
+  background-color: rgba(0, 0, 0, 1);
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(40, 40, 40, 1) 100%);
+  margin: 1em auto;
+  border-radius: 1em;
+  -webkit-box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
+  -moz-box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
+  box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+@media screen and (min-width: 640px) {
+  .audio-card {
+    width: 50%;
+  }
+}
+
+
+@media screen and (min-width: 960px) {
+  .audio-card {
+    width: 30%;
+  }
+}
+
+.audio-buttons{
+  margin: auto 0;
+}
+
+.audio-buttons i {
+  margin: 0 .5em;
+
+}
+
+.audio-buttons i:hover {
+  cursor: pointer;
+  color: #CECECE;
+}
+
+.fa-pause, .fa-stop {
+  display: none;
 }
 
 .form-container {
