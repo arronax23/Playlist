@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using Playlist.Data;
 using Playlist.Models;
 using System.Data;
 using System.Numerics;
+using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
 
 namespace Playlist.Controllers
 {
@@ -24,10 +27,11 @@ namespace Playlist.Controllers
             return _mongoDBService.ReadCollection<Song>("playlist", "song");
         }
 
-        [HttpGet("api/GetOneSong")]
-        public Song GetOneSong(string _id)
+        [HttpGet("api/GetOneSong/{id}")]
+        public Song GetOneSong(string? id)
         {
-            return _mongoDBService.GetOneDocument<Song>("playlist", "song", new MongoDB.Bson.ObjectId(_id));
+            //new ObjectId(timestamp, machine, pid, increment);
+            return _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
         }
 
         [HttpPost("api/AddSong")]
@@ -38,17 +42,17 @@ namespace Playlist.Controllers
         }
 
         [HttpPost("api/UploadFile")]
-        public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio)
+        public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
         {
-            string imgPath = Path.Combine(Environment.CurrentDirectory,"ClientApp\\public\\img", img.FileName);
-            string audioPath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audio.FileName);
+            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"ClientApp\\public\\img", imgPath);
+            string audioABsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audioPath);
 
-            using (FileStream fileStream = new FileStream(imgPath, FileMode.Create))
+            using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
             {
                 img.CopyTo(fileStream);
             }
 
-            using (FileStream fileStream = new FileStream(audioPath, FileMode.Create))
+            using (FileStream fileStream = new FileStream(audioABsolutePath, FileMode.Create))
             {
                 audio.CopyTo(fileStream);
             }

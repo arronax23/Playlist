@@ -1,5 +1,6 @@
 import React, {ChangeEvent, useState, useRef}  from 'react'
 import { useHistory } from 'react-router'
+import {v4 as uuidv4} from 'uuid';
 
 function AddSong() {
     const imgSelected = useRef();
@@ -24,9 +25,9 @@ function AddSong() {
         const song = {author, title, imgPath, audioPath};
         let formData = new FormData();
         formData.append('img',img);
-        // formData.append('imagePath',imgPath);
+        formData.append('imgPath',imgPath);
         formData.append('audio',audio);
-        // formData.append('audioPath',audioPath);
+        formData.append('audioPath',audioPath);
         console.log(song);
 
         fetch('api/AddSong', 
@@ -68,18 +69,27 @@ function AddSong() {
     }
 
     const handleImgChange = (e) => {
+        imgSelected.current.innerHTML = e.target.files[0].name;
+        let imgUUID = uuidv4();
+        let imgNameArray = e.target.files[0].name.split('.');
+        let extension = imgNameArray[1];
+        let imgName = `${imgUUID}.${extension}`;
+
         console.log(e.target.files[0]);
         setImg(e.target.files[0]);
-        setimgPath(e.target.files[0].name);
-        imgSelected.current.innerHTML = e.target.files[0].name;
-        console.log(imgSelected);
+        setimgPath(imgName);
     }
 
     const handleAudioChange = (e) => {
+        audioSelected.current.innerHTML = e.target.files[0].name;
+        let audioUUID = uuidv4();
+        let audioNameArray = e.target.files[0].name.split('.');
+        let extension = audioNameArray[1];
+        let audioName = `${audioUUID}.${extension}`;
+
         console.log(e.target.files[0]);
         setAudio(e.target.files[0]);
-        setAudioPath(e.target.files[0].name);
-        audioSelected.current.innerHTML = e.target.files[0].name;
+        setAudioPath(audioName);
     }
 
     return (

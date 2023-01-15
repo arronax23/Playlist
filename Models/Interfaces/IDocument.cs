@@ -4,5 +4,5 @@ namespace Playlist.Models.Interfaces;
 
 public interface IDocument
 {
-    ObjectId _id { get; set; }
+    public string? Id { get; set; }
 }

@@ -16,11 +16,10 @@ public class MongoDBService
                 .GetDatabase(database)
                 .GetCollection<CollectionType>(collection);
 
-
         return mongoCollection.AsQueryable().AsEnumerable();
     }
 
-    public CollectionType GetOneDocument<CollectionType>(string database, string collection, ObjectId objectId)
+    public CollectionType GetOneDocument<CollectionType>(string database, string collection, string? id)
               where CollectionType : IDocument
     {
         var mongoCollection =
@@ -28,7 +27,7 @@ public class MongoDBService
                 .GetDatabase(database)
                 .GetCollection<CollectionType>(collection);
 
-        var document = mongoCollection.Find(doc => doc._id == objectId).SingleOrDefault();
+        var document = mongoCollection.Find(doc => doc.Id == id).SingleOrDefault();
         return document;
     }
 
@@ -44,7 +43,7 @@ public class MongoDBService
     }
 
 
-    public void Update<CollectionType>(string database, string collection, ObjectId objectId, CollectionType newDocument)
+    public void Update<CollectionType>(string database, string collection, string? id, CollectionType newDocument)
         where CollectionType : IDocument
     {
         var mongoCollection =
@@ -54,15 +53,14 @@ public class MongoDBService
 
         var properties = typeof(CollectionType).GetProperties();
 
-        FilterDefinition<CollectionType> filterDefinition = Builders<CollectionType>.Filter.Eq(document => document._id, objectId);
-
+        FilterDefinition<CollectionType> filterDefinition = Builders<CollectionType>.Filter.Eq(document => document.Id, id);
 
         var updateDefinitionBuilder = Builders<CollectionType>.Update;
         var updateDefinitionList = new List<UpdateDefinition<CollectionType>>();
 
         foreach (var property in properties)
         {
-            if (property.Name != "_id")
+            if (property.Name != "Id")
                 updateDefinitionList.Add(updateDefinitionBuilder.Set(property.Name, property.GetValue(newDocument)));
         }
 

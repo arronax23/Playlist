@@ -1,13 +1,16 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 
-function Card({ imgPath, author, title }) {
+function Card({id, imgPath, author, title }) {
+    const history = useHistory();
     const handleClick = () => {
-        alert('cliked on a card');
+        console.log(id);
+        history.push(`audiocard/${id}`)
     }
   return (
     <div className="card" onClick={handleClick}>
         <div className="image">
-            <img src={`./img/${imgPath}`} />
+            <img src={`/img/${imgPath}`} />
         </div>
         <div className="author">
             {author}
@@ -15,7 +18,6 @@ function Card({ imgPath, author, title }) {
         <div className="title">
             {title}
         </div>
-         
     </div>
   )
 }
