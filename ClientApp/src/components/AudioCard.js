@@ -41,15 +41,15 @@ function AudioCard() {
     return (
         song && 
         (
-        <div className="audio-card-container">
-            <div className="audio-card">
-                <div className="image">
+        <div className="audiocard-container">
+            <div className="audiocard">
+                <div className="audiocard-image">
                     <img src={`/img/${song.imgPath}`} />
                 </div>
-                <div className="author">
+                <div className="audiocard-author">
                     {song.author}
                 </div>
-                <div className="title">
+                <div className="audiocard-title">
                     {song.title}
                 </div>
                 <div className="audio-buttons">

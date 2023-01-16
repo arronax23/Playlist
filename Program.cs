@@ -1,5 +1,4 @@
 using Playlist.Data;
-using Playlist.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 

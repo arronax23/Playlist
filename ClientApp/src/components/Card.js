@@ -9,13 +9,13 @@ function Card({id, imgPath, author, title }) {
     }
   return (
     <div className="card" onClick={handleClick}>
-        <div className="image">
+        <div className="card-image">
             <img src={`/img/${imgPath}`} />
         </div>
-        <div className="author">
+        <div className="card-author">
             {author}
         </div>
-        <div className="title">
+        <div className="card-title">
             {title}
         </div>
     </div>

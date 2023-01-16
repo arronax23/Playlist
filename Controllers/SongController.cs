@@ -30,7 +30,6 @@ namespace Playlist.Controllers
         [HttpGet("api/GetOneSong/{id}")]
         public Song GetOneSong(string? id)
         {
-            //new ObjectId(timestamp, machine, pid, increment);
             return _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
         }
 
