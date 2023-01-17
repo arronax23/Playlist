@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import useFetchGet from './../customHooks/useFetchGet'
+import { ReactComponent as AudioAnimation} from './audioAnimation.svg'
 import { useParams } from 'react-router-dom'
 
 function AudioCard() {
@@ -10,6 +11,7 @@ function AudioCard() {
     const playButton = useRef();
     const pauseButton = useRef();
     const stopButton = useRef();
+    const wave = useRef();
 
     const onPlay = () => {
         audio.current.play();
@@ -17,6 +19,7 @@ function AudioCard() {
         playButton.current.style.display = 'none'
         pauseButton.current.style.display = 'inline-block'
         stopButton.current.style.display = 'inline-block'
+        wave.current.style.display = 'block'
     }
 
     const onPause = () => {
@@ -25,6 +28,7 @@ function AudioCard() {
         playButton.current.style.display = 'inline-block'
         pauseButton.current.style.display = 'none'
         stopButton.current.style.display = 'inline-block'
+        wave.current.style.display = 'none'
     }
 
     const onStop = () => {
@@ -34,6 +38,7 @@ function AudioCard() {
         playButton.current.style.display = 'inline-block'
         pauseButton.current.style.display = 'none'
         stopButton.current.style.display = 'none'
+        wave.current.style.display = 'none'
     }
 
 
@@ -59,6 +64,7 @@ function AudioCard() {
                 </div>
                 <audio src={`/audio/${song.audioPath}`} ref={audio}></audio>
             </div>
+            <AudioAnimation ref={wave} />
         </div>
         )  
     )
