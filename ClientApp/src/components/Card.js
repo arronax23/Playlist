@@ -1,15 +1,52 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 
 function Card({id, imgPath, author, title }) {
     const history = useHistory();
-    const handleClick = () => {
+    const card = useRef();
+    const cardDelete = useRef();
+    const cardListen = useRef();
+    const cardDeleteConfirmation = useRef();
+
+    const handleListenClick = () => {
         console.log(id);
         history.push(`audiocard/${id}`)
     }
+
+    const handleDeleteClick = () => {
+        cardDelete.current.classList.add('hide');
+        cardDeleteConfirmation.current.classList.remove('hide')
+        cardListen.current.classList.add('card-listen-small');
+        cardDeleteConfirmation.current.classList.add('card-delete-confirmation-active');
+    }
+
+    const handleDeleteConfirmedClick = () => {
+        card.current.classList.add('card-disappear')
+
+        setTimeout(() => {
+            card.current.style.position = "absolute";
+        }, 300)
+        
+    }
+
+    const handleDeleteCanceledClick = () => {
+        cardDelete.current.classList.remove('hide');
+        cardListen.current.classList.remove('card-listen-small');
+        cardDeleteConfirmation.current.classList.add('hide')
+    }
+
   return (
-    <div className="card" onClick={handleClick}>
-        <div className="card-image">
+    <div className="card" ref={card}>
+        <div className="card-listen" onClick={handleListenClick} ref={cardListen}>Listen</div>
+        <div className="card-delete" onClick={handleDeleteClick} ref={cardDelete}>Delete</div>
+        <div className="card-delete-confirmation"  ref={cardDeleteConfirmation}>
+            <div>Are you sure?</div>
+            <div className="delete-buttons">
+                <div className="yes" onClick={handleDeleteConfirmedClick}>Yes</div>
+                <div className="no" onClick={handleDeleteCanceledClick}>No</div>
+            </div>
+        </div>
+        <div className="card-image" >
             <img src={`/img/${imgPath}`} />
         </div>
         <div className="card-author">

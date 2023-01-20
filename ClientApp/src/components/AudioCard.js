@@ -58,9 +58,9 @@ function AudioCard() {
                     {song.title}
                 </div>
                 <div className="audio-buttons">
-                    <i class="fa-solid fa-play" onClick={onPlay} ref={playButton}></i>
-                    <i class="fa-solid fa-pause" onClick={onPause} ref={pauseButton}></i>
-                    <i class="fa-solid fa-stop" onClick={onStop} ref={stopButton}></i>
+                    <i className="fa-solid fa-play" onClick={onPlay} ref={playButton}></i>
+                    <i className="fa-solid fa-pause" onClick={onPause} ref={pauseButton}></i>
+                    <i className="fa-solid fa-stop" onClick={onStop} ref={stopButton}></i>
                 </div>
                 <audio src={`/audio/${song.audioPath}`} ref={audio}></audio>
             </div>
