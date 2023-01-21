@@ -25,6 +25,19 @@ function Card({id, imgPath, author, title }) {
 
         setTimeout(() => {
             card.current.style.position = "absolute";
+
+            fetch('api/DeleteSong/'+id, 
+            {
+                method: 'DELETE'
+            })
+            .then(resp => {
+                console.log("resp:"+resp);
+                if (!resp.ok){
+                    throw new Error('Failed deleting.');
+                }
+            })
+            .catch(err => console.log("err:"+err.message))
+
         }, 300)
         
     }

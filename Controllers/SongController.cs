@@ -44,17 +44,32 @@ namespace Playlist.Controllers
         public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
         {
             string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"ClientApp\\public\\img", imgPath);
-            string audioABsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audioPath);
+            string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audioPath);
 
             using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
             {
                 img.CopyTo(fileStream);
             }
 
-            using (FileStream fileStream = new FileStream(audioABsolutePath, FileMode.Create))
+            using (FileStream fileStream = new FileStream(audioAbsolutePath, FileMode.Create))
             {
                 audio.CopyTo(fileStream);
             }
+            return Ok();
+        }
+
+        [HttpDelete("api/DeleteSong/{id}")]
+        public IActionResult DeleteSong(string? id)
+        {
+            var song = _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
+
+            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", song.ImgPath);
+            string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", song.AudioPath);
+
+            System.IO.File.Delete(imgAbsolutePath);
+            System.IO.File.Delete(audioAbsolutePath);
+
+            _mongoDBService.DeleteDocument<Song>("playlist", "song", id);
             return Ok();
         }
     }

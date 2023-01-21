@@ -67,4 +67,17 @@ public class MongoDBService
         mongoCollection.UpdateOne(filterDefinition, updateDefinitionBuilder.Combine(updateDefinitionList));
     }
 
+    public void DeleteDocument<CollectionType>(string database, string collection, string? id)
+        where CollectionType : IDocument
+    {
+        var mongoCollection =
+            _client
+                .GetDatabase(database)
+                .GetCollection<CollectionType>(collection);
+
+
+        FilterDefinition<CollectionType> filterDefinition = Builders<CollectionType>.Filter.Eq(document => document.Id, id);
+        mongoCollection.DeleteOne(filterDefinition);
+    }
+
 }
