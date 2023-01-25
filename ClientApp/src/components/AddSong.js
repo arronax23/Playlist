@@ -72,7 +72,7 @@ function AddSong() {
         imgSelected.current.innerHTML = e.target.files[0].name;
         let imgUUID = uuidv4();
         let imgNameArray = e.target.files[0].name.split('.');
-        let extension = imgNameArray[1];
+        let extension = imgNameArray[imgNameArray.length - 1];
         let imgName = `${imgUUID}.${extension}`;
 
         console.log(e.target.files[0]);
@@ -84,7 +84,7 @@ function AddSong() {
         audioSelected.current.innerHTML = e.target.files[0].name;
         let audioUUID = uuidv4();
         let audioNameArray = e.target.files[0].name.split('.');
-        let extension = audioNameArray[1];
+        let extension = audioNameArray[audioNameArray.length - 1];
         let audioName = `${audioUUID}.${extension}`;
 
         console.log(e.target.files[0]);

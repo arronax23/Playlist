@@ -9,68 +9,67 @@ using System.Numerics;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 
-namespace Playlist.Controllers
+namespace Playlist.Controllers;
+
+[ApiController]
+public class SongController : ControllerBase
 {
-    [ApiController]
-    public class SongController : ControllerBase
+    private readonly MongoDBService _mongoDBService;
+
+    public SongController(MongoDBService mongoDBService)
     {
-        private readonly MongoDBService _mongoDBService;
+        _mongoDBService = mongoDBService;
+    }
 
-        public SongController(MongoDBService mongoDBService)
+    [HttpGet("api/GetAllSongs")]
+    public IEnumerable<Song> GetAllSongs()
+    {
+        return _mongoDBService.ReadCollection<Song>("playlist", "song");
+    }
+
+    [HttpGet("api/GetOneSong/{id}")]
+    public Song GetOneSong(string? id)
+    {
+        return _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
+    }
+
+    [HttpPost("api/AddSong")]
+    public IActionResult AddSong(Song song)
+    {
+        _mongoDBService.Insert("playlist", "song", song);
+        return Ok();
+    }
+
+    [HttpPost("api/UploadFile")]
+    public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
+    {
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"ClientApp\\public\\img", imgPath);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audioPath);
+
+        using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
         {
-            _mongoDBService = mongoDBService;
+            img.CopyTo(fileStream);
         }
 
-        [HttpGet("api/GetAllSongs")]
-        public IEnumerable<Song> GetAllSongs()
+        using (FileStream fileStream = new FileStream(audioAbsolutePath, FileMode.Create))
         {
-            return _mongoDBService.ReadCollection<Song>("playlist", "song");
+            audio.CopyTo(fileStream);
         }
+        return Ok();
+    }
 
-        [HttpGet("api/GetOneSong/{id}")]
-        public Song GetOneSong(string? id)
-        {
-            return _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
-        }
+    [HttpDelete("api/DeleteSong/{id}")]
+    public IActionResult DeleteSong(string? id)
+    {
+        var song = _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
 
-        [HttpPost("api/AddSong")]
-        public IActionResult AddSong(Song song)
-        {
-            _mongoDBService.Insert("playlist", "song", song);
-            return Ok();
-        }
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", song.ImgPath);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", song.AudioPath);
 
-        [HttpPost("api/UploadFile")]
-        public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
-        {
-            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"ClientApp\\public\\img", imgPath);
-            string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audioPath);
+        System.IO.File.Delete(imgAbsolutePath);
+        System.IO.File.Delete(audioAbsolutePath);
 
-            using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
-            {
-                img.CopyTo(fileStream);
-            }
-
-            using (FileStream fileStream = new FileStream(audioAbsolutePath, FileMode.Create))
-            {
-                audio.CopyTo(fileStream);
-            }
-            return Ok();
-        }
-
-        [HttpDelete("api/DeleteSong/{id}")]
-        public IActionResult DeleteSong(string? id)
-        {
-            var song = _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
-
-            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", song.ImgPath);
-            string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", song.AudioPath);
-
-            System.IO.File.Delete(imgAbsolutePath);
-            System.IO.File.Delete(audioAbsolutePath);
-
-            _mongoDBService.DeleteDocument<Song>("playlist", "song", id);
-            return Ok();
-        }
+        _mongoDBService.DeleteDocument<Song>("playlist", "song", id);
+        return Ok();
     }
 }
