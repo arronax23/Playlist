@@ -7,6 +7,7 @@ builder.Services.AddSingleton<MongoDBService>();
 
 var app = builder.Build();
 
+app.UseHttpLogging();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseStaticFiles();
