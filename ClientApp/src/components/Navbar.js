@@ -12,7 +12,6 @@ function Navbar() {
   const barClick = () => {
     home.current.classList.toggle('hidden');
     addSong.current.classList.toggle('hidden');
-    nav.current.classList.toggle('slim');
   }
 
   return (
@@ -24,8 +23,8 @@ function Navbar() {
       </div>
         <ul>
             <li className="logo" onClick={() => history.push('/')}><img src={logo} alt="No logo" /></li>
-            <li className="home" ref={home} onClick={() => history.push('/')}>Home</li>
-            <li className="add-song" ref={addSong} onClick={() => history.push('/addsong')}>Add song</li>
+            <li className="home hidden" ref={home} onClick={() => history.push('/')}>Home</li>
+            <li className="add-song hidden" ref={addSong} onClick={() => history.push('/addsong')}>Add song</li>
         </ul>
   </nav>
   )
