@@ -94,13 +94,24 @@ nav ul li:hover {
   cursor: pointer;
   background-color: white;
   color: black;
+  position: relative;
 }
 
 @media screen and (min-width: 400px) {
   nav ul li:hover {
     background-color: unset;
     color: white;
-    border-bottom: 1px solid white;;
+    /* border-bottom: 1px solid white; */
+  }
+
+  nav ul li:hover::after {
+    content: "";
+    background: white;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
   }
   
 }
