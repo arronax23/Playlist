@@ -13,6 +13,16 @@ function AudioCard() {
     const stopButton = useRef();
     const wave = useRef();
 
+    const onTimeUpdate = () => {
+        if(audio.current.ended)
+        {
+            playButton.current.style.display = 'inline-block'
+            pauseButton.current.style.display = 'none'
+            stopButton.current.style.display = 'none'
+            wave.current.style.display = 'none'
+        }
+    }
+
     const onPlay = () => {
         audio.current.play();
 
@@ -62,7 +72,7 @@ function AudioCard() {
                     <i className="fa-solid fa-pause" onClick={onPause} ref={pauseButton}></i>
                     <i className="fa-solid fa-stop" onClick={onStop} ref={stopButton}></i>
                 </div>
-                <audio src={`/audio/${song.audioPath}`} ref={audio}></audio>
+                <audio src={`/audio/${song.audioPath}`} ref={audio} onTimeUpdate={onTimeUpdate}></audio>
             </div>
             <AudioAnimation ref={wave} />
         </div>
