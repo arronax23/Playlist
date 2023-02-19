@@ -11,9 +11,14 @@ function AudioCard() {
     const playButton = useRef();
     const pauseButton = useRef();
     const stopButton = useRef();
+    const progress = useRef();
     const wave = useRef();
 
     const onTimeUpdate = () => {
+
+        let progressPercentage = Math.round(100* audio.current.currentTime / audio.current.duration);
+        progress.current.style.width = `${progressPercentage}%`;
+
         if(audio.current.ended)
         {
             playButton.current.style.display = 'inline-block'
@@ -51,6 +56,16 @@ function AudioCard() {
         wave.current.style.display = 'none'
     }
 
+    const onBackward = () => {
+        audio.current.currentTime -= 10;
+    }
+
+    const onForward = () => {
+        audio.current.currentTime += 10;
+    }
+
+
+
 
     
     return (
@@ -67,10 +82,16 @@ function AudioCard() {
                 <div className="audiocard-title">
                     {song.title}
                 </div>
+                <div className="audio-bar">
+                    <div className="audio-bar-progress"  ref={progress}>
+                    </div>
+                </div>
                 <div className="audio-buttons">
-                    <i className="fa-solid fa-play" onClick={onPlay} ref={playButton}></i>
-                    <i className="fa-solid fa-pause" onClick={onPause} ref={pauseButton}></i>
-                    <i className="fa-solid fa-stop" onClick={onStop} ref={stopButton}></i>
+                    <i class="fa-solid fa-backward" title="-10s" onClick={onBackward}></i>
+                    <i className="fa-solid fa-play" title="Play" onClick={onPlay} ref={playButton}></i>
+                    <i className="fa-solid fa-pause" title="Pause" onClick={onPause} ref={pauseButton}></i>
+                    <i className="fa-solid fa-stop" title="Stop" onClick={onStop} ref={stopButton}></i>
+                    <i class="fa-solid fa-forward" title="+10s" onClick={onForward}></i>
                 </div>
                 <audio src={`/audio/${song.audioPath}`} ref={audio} onTimeUpdate={onTimeUpdate}></audio>
             </div>
