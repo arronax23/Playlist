@@ -354,6 +354,7 @@ img {
   -moz-box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
   box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
 
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -417,18 +418,17 @@ img {
   font-size: 1.5rem;
 }
 
-.form-container {
+.add-song-container {
   width: 100%;
   height: 90%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-
-.form {
+.option-1-form, .options {
   width: 80%;
-  height: 70%;
   color: white;
   background-color: rgba(0, 0, 0, 1);
   background-image: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(40, 40, 40, 1) 100%);
@@ -438,17 +438,73 @@ img {
   box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
 }
 
+.option-1-form {
+  margin-top: 1.5rem;
+  height: 70%;
+}
+
+.options {
+  height: 20%;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
 
 @media screen and (min-width: 640px) {
-  .form {
+  .option-1-form, .options {
     width: 50%;
   }
 }
 
 @media screen and (min-width: 960px) {
-  .form {
+  .option-1-form, .options {
     width: 30%;
   }
+}
+
+
+.options-header {
+  /* font-size: 2rem; */
+  font-weight: 400;
+}
+
+.options-list {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 70%;
+}
+
+.option-description p {
+  font-size: 1.5rem;
+}
+
+.option-description .hide {
+  display: none;
+}
+
+
+.option {
+  font-size: 1.5rem;
+  background-color: black;
+  border: 5px solid white;
+  color: white;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all .25s;
+}
+
+.options-list .option.active {
+  background-color: white;
+  border: 5px solid white;
+  color: black;
 }
 
 
@@ -520,19 +576,12 @@ input[type="file"] {
 #wave {
   display: none;
   position: absolute;
-  top: 15%;
+  bottom: -100px;
 	height: 100px;
 	width: 100px;
 	fill: #fff;
 }
 
-
-@media screen and (min-width: 400px) {
-  #wave {
-    top: unset;
-    bottom: 5%;
-  }
-}
 
 #Line_1{
   animation: pulse 1s infinite;

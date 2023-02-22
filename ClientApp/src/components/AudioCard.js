@@ -87,15 +87,15 @@ function AudioCard() {
                     </div>
                 </div>
                 <div className="audio-buttons">
-                    <i class="fa-solid fa-backward" title="-10s" onClick={onBackward}></i>
+                    <i className="fa-solid fa-backward" title="-10s" onClick={onBackward}></i>
                     <i className="fa-solid fa-play" title="Play" onClick={onPlay} ref={playButton}></i>
                     <i className="fa-solid fa-pause" title="Pause" onClick={onPause} ref={pauseButton}></i>
                     <i className="fa-solid fa-stop" title="Stop" onClick={onStop} ref={stopButton}></i>
-                    <i class="fa-solid fa-forward" title="+10s" onClick={onForward}></i>
+                    <i className="fa-solid fa-forward" title="+10s" onClick={onForward}></i>
                 </div>
                 <audio src={`/audio/${song.audioPath}`} ref={audio} onTimeUpdate={onTimeUpdate}></audio>
+                <AudioAnimation ref={wave} />
             </div>
-            <AudioAnimation ref={wave} />
         </div>
         )  
     )
