@@ -427,7 +427,7 @@ img {
   align-items: center;
 }
 
-.option-1-form, .options {
+.form-container, .options {
   width: 80%;
   color: white;
   background-color: rgba(0, 0, 0, 1);
@@ -438,9 +438,13 @@ img {
   box-shadow: .25em .25em 10px 0px rgba(0, 0, 0, 1);
 }
 
-.option-1-form {
+.form-container {
   margin-top: 1.5rem;
   height: 70%;
+}
+
+#custom-img {
+  height: 1.5rem;
 }
 
 .options {
@@ -453,13 +457,13 @@ img {
 }
 
 @media screen and (min-width: 640px) {
-  .option-1-form, .options {
+  .form-container, .options {
     width: 50%;
   }
 }
 
 @media screen and (min-width: 960px) {
-  .option-1-form, .options {
+  .form-container, .options {
     width: 30%;
   }
 }
@@ -526,6 +530,14 @@ form input {
   width: 50%;
 }
 
+.file-label.disabled .selected-file {
+  background: #95A3A4;
+}
+
+.file-label.disabled i, .file-label.disabled p {
+  color: #95A3A4;
+}
+
 form button {
   font-size: 1.5rem;
   padding: 0 2em;
@@ -557,6 +569,10 @@ input[type="file"] {
 .file-label:hover {
   cursor: pointer;
   color: #CECECE;
+}
+
+.file-label.disabled {
+  cursor: not-allowed;
 }
 
 .selected-file {
