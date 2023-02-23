@@ -7,14 +7,13 @@ function Option1Form() {
     const imgInput = useRef();
 
     const audioSelected = useRef();
-    const audioInput = useRef();
 
     const history = useHistory();
 
     const [author, setAuthor] = useState('');
     const [title, setTitle] = useState('');
     const [img, setImg] = useState();
-    const [imgPath, setimgPath] = useState();
+    const [imgPath, setimgPath] = useState('');
     const [audio, setAudio] = useState();
     const [audioPath, setAudioPath] = useState('');
 
@@ -107,7 +106,7 @@ function Option1Form() {
                 <label className="file-label" htmlFor="audio" onChange={handleAudioChange}>
                     <p>Audio</p>
                     <i className="fa-solid fa-headphones"></i>
-                    <input ref={audioInput} type="file" name="audio" id="audio"  />
+                    <input type="file" name="audio" id="audio"  />
                     <p ref={audioSelected} className="selected-file"></p>
                 </label>
 

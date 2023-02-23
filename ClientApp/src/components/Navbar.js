@@ -5,17 +5,13 @@ import { useHistory } from 'react-router';
 
 function Navbar() {
   const history = useHistory();
-  const nav = useRef();
-  const home = useRef();
-  const addSong = useRef();
 
   const barClick = () => {
-    home.current.classList.toggle('hidden');
-    addSong.current.classList.toggle('hidden');
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('mobile-hidden'));
   }
 
   return (
-    <nav ref={nav}>
+    <nav>
       <div className="bar-container" onClick={barClick}>
         <div className="bar"></div>
         <div className="bar"></div>
@@ -23,8 +19,8 @@ function Navbar() {
       </div>
         <ul>
             <li className="logo" onClick={() => history.push('/')}><img src={logo} alt="No logo" /></li>
-            <li className="home hidden" ref={home} onClick={() => history.push('/')}>Home</li>
-            <li className="add-song hidden" ref={addSong} onClick={() => history.push('/addsong')}>Add song</li>
+            <li className="nav-item home mobile-hidden" onClick={() => history.push('/')}>Home</li>
+            <li className="nav-item add-song mobile-hidden" onClick={() => history.push('/addsong')}>Add song</li>
         </ul>
   </nav>
   )

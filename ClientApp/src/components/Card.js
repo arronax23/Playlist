@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 
-function Card({id, imgPath, author, title }) {
+function Card({id, author, title, audioOrVideo, customImg, imgPath, videoPath }) {
     const history = useHistory();
     const card = useRef();
     const cardDelete = useRef();
@@ -10,7 +10,12 @@ function Card({id, imgPath, author, title }) {
 
     const handleListenClick = () => {
         console.log(id);
-        history.push(`audiocard/${id}`)
+        if (audioOrVideo == "audio"){
+            history.push(`audiocard/${id}`)
+        }
+        else if (audioOrVideo == "video"){
+            history.push(`videocard/${id}`)
+        }
     }
 
     const handleDeleteClick = () => {
@@ -24,9 +29,17 @@ function Card({id, imgPath, author, title }) {
         card.current.classList.add('card-disappear')
 
         setTimeout(() => {
-            card.current.style.position = "absolute";
+            card.current.style.position = 'absolute';
 
-            fetch('api/DeleteSong/'+id, 
+            let apiURL = "";
+            if (audioOrVideo == "audio" ){
+                apiURL = "api/DeleteSong/";
+            }
+            else if (audioOrVideo == "video"){
+                apiURL = "api/DeleteVideoSong/";
+            }
+
+            fetch(apiURL+id, 
             {
                 method: 'DELETE'
             })
@@ -59,15 +72,47 @@ function Card({id, imgPath, author, title }) {
                 <div className="no" onClick={handleDeleteCanceledClick}>No</div>
             </div>
         </div>
-        <div className="card-image" >
-            <img src={`/img/${imgPath}`} />
-        </div>
+        { audioOrVideo == "audio" || customImg == true ? 
+        (
+            <div className="card-image" >
+                <img src={`/img/${imgPath}`} />
+            </div>
+        )
+        :
+        audioOrVideo == "video" && customImg == false ? 
+        (
+            <div className="card-image" >
+                <video src={`/video/${videoPath}`}></video>
+            </div>
+        )
+        : 
+        null
+        }
+
         <div className="card-author">
             {author}
         </div>
         <div className="card-title">
             {title}
+
         </div>
+        { audioOrVideo == "audio" ? 
+        (
+            <div className="card-icon">
+            <i className="fa-solid fa-headphones" title='Audio'></i>
+            </div>
+        )
+        :
+        audioOrVideo == "video" ? 
+        (
+            <div className="card-icon">
+            <i className="fa-solid fa-film" title='Video'></i>
+            </div>
+        )
+        : 
+        null
+        }
+
     </div>
   )
 }

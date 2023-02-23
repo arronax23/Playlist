@@ -7,31 +7,31 @@ function Option2Form() {
     const imgInput = useRef();
 
     const videoSelected = useRef();
-    const audioInput = useRef();
 
     const history = useHistory();
 
     const [author, setAuthor] = useState('');
     const [title, setTitle] = useState('');
     const [customImg, setCustomImg] = useState(false);
-    const [img, setImg] = useState();
-    const [imgPath, setimgPath] = useState();
+    const [img, setImg] = useState(new File([""], "dummy"));
+    const [imgPath, setimgPath] = useState('dummy');
     const [video, setVideo] = useState();
     const [videoPath, setVideoPath] = useState('');
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(img);
 
-        const song = {author, title, imgPath, audioPath: videoPath};
+        const song = {author, title, customImg, imgPath, videoPath};
         let formData = new FormData();
         formData.append('img',img);
         formData.append('imgPath',imgPath);
+        formData.append('customImg',customImg);
         formData.append('video',video);
         formData.append('videoPath',videoPath);
-        console.log(song);
+        console.log(img);
 
-        fetch('api/AddSong', 
+
+        fetch('api/AddVideoSong', 
             {
                 method: 'POST',
                 headers: {
@@ -46,7 +46,7 @@ function Option2Form() {
             }
             else{
                 console.log(formData);
-                fetch('api/UploadFile', {
+                fetch('api/UploadVideoFile', {
                     method: 'POST',
                     body: formData
                   })
@@ -121,10 +121,10 @@ function Option2Form() {
                     </label>
                 )}
 
-                <label className="file-label" htmlFor="audio" onChange={handleVideoChange}>
+                <label className="file-label" htmlFor="video" onChange={handleVideoChange}>
                     <p>Video</p>
                     <i className="fa-solid fa-film"></i>
-                    <input ref={audioInput} type="file" name="video" id="video"  />
+                    <input type="file" name="video" id="video"  />
                     <p ref={videoSelected} className="selected-file"></p>
                 </label>
 

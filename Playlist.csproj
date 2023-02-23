@@ -28,6 +28,7 @@
   <ItemGroup>
     <Folder Include="ClientApp\public\img\" />
     <Folder Include="ClientApp\public\audio\" />
+    <Folder Include="ClientApp\public\video\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

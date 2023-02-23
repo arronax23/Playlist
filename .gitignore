@@ -230,3 +230,9 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+*.mp3
+*.mp4
+*.png
+*.jpg
+*.webp

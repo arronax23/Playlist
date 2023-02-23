@@ -15,6 +15,8 @@ namespace Playlist.Controllers;
 public class SongController : ControllerBase
 {
     private readonly MongoDBService _mongoDBService;
+    private readonly string _database = "playlist";
+    private readonly string _collection = "song";
 
     public SongController(MongoDBService mongoDBService)
     {
@@ -24,19 +26,19 @@ public class SongController : ControllerBase
     [HttpGet("api/GetAllSongs")]
     public IEnumerable<Song> GetAllSongs()
     {
-        return _mongoDBService.ReadCollection<Song>("playlist", "song");
+        return _mongoDBService.ReadCollection<Song>(_database, _collection);
     }
 
     [HttpGet("api/GetOneSong/{id}")]
     public Song GetOneSong(string? id)
     {
-        return _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
+        return _mongoDBService.GetOneDocument<Song>(_database, _collection, id);
     }
 
     [HttpPost("api/AddSong")]
     public IActionResult AddSong(Song song)
     {
-        _mongoDBService.Insert("playlist", "song", song);
+        _mongoDBService.Insert(_database, _collection, song);
         return Ok();
     }
 
@@ -61,7 +63,7 @@ public class SongController : ControllerBase
     [HttpDelete("api/DeleteSong/{id}")]
     public IActionResult DeleteSong(string? id)
     {
-        var song = _mongoDBService.GetOneDocument<Song>("playlist", "song", id);
+        var song = _mongoDBService.GetOneDocument<Song>(_database, _collection, id);
 
         string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", song.ImgPath);
         string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", song.AudioPath);
@@ -69,7 +71,7 @@ public class SongController : ControllerBase
         System.IO.File.Delete(imgAbsolutePath);
         System.IO.File.Delete(audioAbsolutePath);
 
-        _mongoDBService.DeleteDocument<Song>("playlist", "song", id);
+        _mongoDBService.DeleteDocument<Song>(_database, _collection, id);
         return Ok();
     }
 }
