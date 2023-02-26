@@ -39,7 +39,6 @@ public class VideoSongController : ControllerBase
     [HttpPost("api/UploadVideoFile")]
     public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] string imgPath, [FromForm] bool customImg, [FromForm] IFormFile video, [FromForm] string videoPath)
     {
-
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);

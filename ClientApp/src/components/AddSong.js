@@ -14,8 +14,7 @@ function AddSong() {
                 pickedOption == 2 ? <Option2Form /> :
                 pickedOption == 3 ? <Option3Form /> :
                 null
-                }
-            
+            }
         </div>
     )
 }

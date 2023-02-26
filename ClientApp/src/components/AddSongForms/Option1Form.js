@@ -56,14 +56,16 @@ function Option1Form() {
                     else {
                         history.push('/');
                     }
-                });
+                    return response.text()
+                })
+                .then(data => console.log(data));
                 
        
             }
         })
-        .catch(error => {
-            console.log(error);
-        });
+        // .catch(error => {
+        //     console.log(error);
+        // });
     }
 
     const handleImgChange = (e) => {
