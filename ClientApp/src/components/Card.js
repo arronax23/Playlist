@@ -30,6 +30,12 @@ function Card({id, author, title, audioOrVideo, customImg, imgPath, videoPath })
 
         setTimeout(() => {
             card.current.style.position = 'absolute';
+            if (audioOrVideo == "video"  && customImg == false){
+                const videoTag = document.querySelector('video');
+                videoTag.removeAttribute('src');
+                videoTag.load();
+            }
+    
 
             let apiURL = "";
             if (audioOrVideo == "audio" ){

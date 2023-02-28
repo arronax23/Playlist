@@ -65,14 +65,25 @@ public class SongController : ControllerBase
     public IActionResult DeleteSong(string? id)
     {
         var song = _mongoDBService.GetOneDocument<Song>(_database, _collection, id);
+        
+        _mongoDBService.DeleteDocument<Song>(_database, _collection, id);
 
         string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
         string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioPath);
 
-        System.IO.File.Delete(imgAbsolutePath);
-        System.IO.File.Delete(audioAbsolutePath);
 
-        _mongoDBService.DeleteDocument<Song>(_database, _collection, id);
+        try
+        {
+            System.IO.File.Delete(imgAbsolutePath);
+            System.IO.File.Delete(audioAbsolutePath);
+        }
+        catch (Exception)
+        {
+
+            return Ok("Files were not deleted");
+        }
+
+
         return Ok();
     }
 }
