@@ -1,6 +1,7 @@
 import React, { useState, useRef}  from 'react'
 import { useHistory } from 'react-router'
 import {v4 as uuidv4} from 'uuid';
+import { ReactComponent as Spinner} from './spinner.svg'
 
 function Option2Form() {
     const imgSelected = useRef();
@@ -9,6 +10,7 @@ function Option2Form() {
     const videoSelected = useRef();
 
     const history = useHistory();
+    const fileUploadContainer = useRef();
 
     const [author, setAuthor] = useState('');
     const [title, setTitle] = useState('');
@@ -17,9 +19,25 @@ function Option2Form() {
     const [imgPath, setimgPath] = useState('dummy');
     const [video, setVideo] = useState();
     const [videoPath, setVideoPath] = useState('');
+    const [uploadedSongId, setUploadedSongId] = useState('');
+
+
+    const onPopupExit = (e) => {
+        fileUploadContainer.current.classList.remove('active');
+        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+    }
+
+    const navigateToHomePage = (e) => {
+        history.push('/');
+    }
+
+    const navigateToVideoCard = (e) => {
+        history.push(`videocard/${uploadedSongId}`)
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
+        fileUploadContainer.current.classList.add('active');
 
         const song = {author, title, customImg, imgPath, videoPath};
         let formData = new FormData();
@@ -50,19 +68,16 @@ function Option2Form() {
                     method: 'POST',
                     body: formData
                   })
-                  .then(response => {
-                    if (!response.ok){
-                        alert('Error');
-                        throw new Error("Something went wrong!");
-                    }
-                    else {
-                        history.push('/');
+                  .then(resp => {
+                    console.log(resp);
+                    if (resp.ok){
+                        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
                     }
                 });
-                
-       
+                return response.json()
             }
         })
+        .then(uploadedSong => setUploadedSongId(uploadedSong.id))
         .catch(error => {
             console.log(error);
         });
@@ -93,6 +108,19 @@ function Option2Form() {
     }
     return (
         <div className="form-container">
+            <div className="file-upload-container" ref={fileUploadContainer}>
+                <div className='file-upload-popup spinner active'>
+                    <Spinner />
+                </div>
+                <div className='file-upload-popup uploaded'>
+                    <h3>Files uploaded!</h3>
+                    <i className="fa-solid fa-xmark" onClick={onPopupExit}></i>
+                    <div className="buttons">
+                        <button onClick={navigateToHomePage}>Back to Home Page</button>
+                        <button onClick={navigateToVideoCard}>Listen to the song</button>
+                    </div>
+                </div>
+            </div>
             <form onSubmit={onSubmit}>
                 <label htmlFor="author">Author</label>
                 <input type="text" name="author" id="author" value={author} onChange={(e) => setAuthor(e.target.value)} />

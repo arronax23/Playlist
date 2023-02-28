@@ -39,14 +39,15 @@ public class SongController : ControllerBase
     public IActionResult AddSong(Song song)
     {
         _mongoDBService.Insert(_database, _collection, song);
-        return Ok();
+
+        return Created($"api/GetOneVideoSong/{song.Id}", song);
     }
 
     [HttpPost("api/UploadFile")]
     public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
     {
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"ClientApp\\public\\img", imgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", audioPath);
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"wwwroot\\img", imgPath);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", audioPath);
 
         using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
         {
@@ -65,8 +66,8 @@ public class SongController : ControllerBase
     {
         var song = _mongoDBService.GetOneDocument<Song>(_database, _collection, id);
 
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", song.ImgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\audio", song.AudioPath);
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioPath);
 
         System.IO.File.Delete(imgAbsolutePath);
         System.IO.File.Delete(audioAbsolutePath);

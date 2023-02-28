@@ -1,13 +1,15 @@
 import React, { useState, useRef}  from 'react'
 import { useHistory } from 'react-router'
 import {v4 as uuidv4} from 'uuid';
+import { ReactComponent as Spinner} from './spinner.svg'
 
 function Option1Form() {
     const imgSelected = useRef();
     const imgInput = useRef();
 
     const audioSelected = useRef();
-
+    
+    const fileUploadContainer = useRef();
     const history = useHistory();
 
     const [author, setAuthor] = useState('');
@@ -16,10 +18,24 @@ function Option1Form() {
     const [imgPath, setimgPath] = useState('');
     const [audio, setAudio] = useState();
     const [audioPath, setAudioPath] = useState('');
+    const [uploadedSongId, setUploadedSongId] = useState('');
+
+    const onPopupExit = (e) => {
+        fileUploadContainer.current.classList.remove('active');
+        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+    }
+
+    const navigateToHomePage = (e) => {
+        history.push('/');
+    }
+
+    const navigateToVideoCard = (e) => {
+        history.push(`audiocard/${uploadedSongId}`)
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(img);
+        fileUploadContainer.current.classList.add('active');
 
         const song = {author, title, imgPath, audioPath};
         let formData = new FormData();
@@ -47,25 +63,25 @@ function Option1Form() {
                 fetch('api/UploadFile', {
                     method: 'POST',
                     body: formData
-                  })
-                  .then(response => {
-                    if (!response.ok){
+                })
+                .then(resp => {
+                    if (!resp.ok){
                         alert('Error');
                         throw new Error("Something went wrong!");
                     }
                     else {
-                        history.push('/');
+                        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
                     }
-                    return response.text()
+                    return resp.text()
                 })
                 .then(data => console.log(data));
-                
-       
             }
+            return response.json();
         })
-        // .catch(error => {
-        //     console.log(error);
-        // });
+        .then(uploadedSong => setUploadedSongId(uploadedSong.id))
+        .catch(error => {
+            console.log(error);
+        });
     }
 
     const handleImgChange = (e) => {
@@ -93,6 +109,19 @@ function Option1Form() {
     }
     return (
         <div className="form-container">
+            <div className="file-upload-container" ref={fileUploadContainer}>
+                <div className='file-upload-popup spinner active'>
+                    <Spinner />
+                </div>
+                <div className='file-upload-popup uploaded'>
+                    <h3>Files uploaded!</h3>
+                    <i className="fa-solid fa-xmark" onClick={onPopupExit}></i>
+                    <div className="buttons">
+                        <button onClick={navigateToHomePage}>Back to Home Page</button>
+                        <button onClick={navigateToVideoCard}>Listen to the song</button>
+                    </div>
+                </div>
+            </div>
             <form onSubmit={onSubmit}>
                 <label htmlFor="author">Author</label>
                 <input type="text" name="author" id="author" value={author} onChange={(e) => setAuthor(e.target.value)} />

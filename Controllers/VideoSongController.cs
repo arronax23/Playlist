@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Playlist.Data;
 using Playlist.Models;
+using System.Numerics;
 
 namespace Playlist.Controllers;
 
@@ -33,7 +34,8 @@ public class VideoSongController : ControllerBase
     public IActionResult AddSong(VideoSong song)
     {
         _mongoDBService.Insert(_database, _collection, song);
-        return Ok();
+
+        return Created($"api/GetOneVideoSong/{song.Id}", song);
     }
 
     [HttpPost("api/UploadVideoFile")]
@@ -46,7 +48,7 @@ public class VideoSongController : ControllerBase
 
         if (customImg)
         {
-            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", imgPath);
+            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", imgPath);
 
             using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
             {
@@ -55,7 +57,7 @@ public class VideoSongController : ControllerBase
 
         }
 
-        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\video", videoPath);
+        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\video", videoPath);
 
         using (FileStream fileStream = new FileStream(videoAbsolutePath, FileMode.Create))
         {
@@ -71,11 +73,11 @@ public class VideoSongController : ControllerBase
 
         if (song.CustomImg)
         {
-            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\img", song.ImgPath);
+            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
             System.IO.File.Delete(imgAbsolutePath);
         }
 
-        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "ClientApp\\public\\video", song.VideoPath);
+        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\video", song.VideoPath);
         System.IO.File.Delete(videoAbsolutePath);
 
         _mongoDBService.DeleteDocument<Song>(_database, _collection, id);

@@ -27,9 +27,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\public\img\" />
-    <Folder Include="ClientApp\public\audio\" />
-    <Folder Include="ClientApp\public\video\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\audio\" />
+    <Folder Include="wwwroot\video\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\audio\17d68331-4b64-4658-b27a-9d098017a413.mp3" />
+    <None Include="wwwroot\audio\8ccd2b92-dc38-4319-ac2a-b654769441d9.mp3" />
+    <None Include="wwwroot\audio\9342acf1-2223-423a-aada-f60f270c7b72.mp3" />
+    <None Include="wwwroot\audio\a6a125b0-8cc4-42d0-b850-c33f5da969fd.mp3" />
+    <None Include="wwwroot\audio\a9a6fd6b-b0d7-4e38-88d0-b8fb1dbd385b.mp3" />
+    <None Include="wwwroot\audio\e360e310-82f9-4294-b82e-cc78a26ec2ad.mp3" />
+    <None Include="wwwroot\img\1ca2d607-500c-4c12-8c4a-3b0cb4593b15.webp" />
+    <None Include="wwwroot\img\34ae35d3-52e0-4034-bfdc-eba92057d2a3.png" />
+    <None Include="wwwroot\img\73e82260-356a-4ea6-927c-7c67c840e4b3.webp" />
+    <None Include="wwwroot\img\76ea4bff-46a6-4175-9b31-cf72062275ef.jpg" />
+    <None Include="wwwroot\img\91419057-00c7-411f-a4ce-a2ee881e24de.jpg" />
+    <None Include="wwwroot\img\9593aeed-216b-494e-be45-56dcd43425aa.jpg" />
+    <None Include="wwwroot\img\be9b0866-b92a-441e-acc3-1944315375f6.webp" />
+    <None Include="wwwroot\video\099b0be8-69b3-4f61-9bf7-45ffe9c3e1e0.mp4" />
+    <None Include="wwwroot\video\0d916de9-2537-4174-9eaa-6bde5c37ada2.mp4" />
+    <None Include="wwwroot\video\7c35b6df-a4b6-40f1-9333-dc2b63718d64.mp4" />
+    <None Include="wwwroot\video\baabbdf8-0119-43ef-a267-3b666ed201c2.mp4" />
+    <None Include="wwwroot\video\c65b7e0a-9458-47d1-80bf-8726e8183b84.mp4" />
+    <None Include="wwwroot\video\video.mp4" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
