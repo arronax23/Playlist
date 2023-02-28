@@ -634,13 +634,14 @@ input[type="file"] {
   border-radius: 1rem;
   width: 18rem;
   height: 6rem;
+  padding: .5rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 
-.file-upload-popup.spinner, .file-upload-popup.uploaded {
+.file-upload-popup.spinner, .file-upload-popup.uploaded, .file-upload-popup.errors {
   display: none;
 }
 
@@ -673,7 +674,7 @@ input[type="file"] {
   justify-content: space-around;
 }
 
-.file-upload-popup.uploaded.active .buttons button {
+.file-upload-popup.uploaded.active .buttons button, .file-upload-popup.errors button {
   position: relative;
   background: white;
   border: unset;
@@ -681,7 +682,7 @@ input[type="file"] {
   cursor: pointer;
 }
 
-.file-upload-popup.uploaded.active .buttons button:hover::after {
+.file-upload-popup.uploaded.active .buttons button:hover::after, .file-upload-popup.errors button:hover::after {
   content: "";
   background: black;
   position: absolute;
@@ -708,6 +709,14 @@ input[type="file"] {
   width: 100%;
   bottom: 0;
   left: 0;
+}
+
+.file-upload-popup.errors.active {
+  display: flex;
+  flex-direction: column;
+  color: red;
+  height: auto;
+  font-size: 1.5rem;
 }
 
 @keyframes text-blink {

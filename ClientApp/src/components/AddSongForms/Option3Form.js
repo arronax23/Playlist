@@ -22,11 +22,32 @@ function Option3Form() {
     // const [imgPath, setImgPath] = useState('');
     const [imgLink, setImgLink] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
+    const [errors, setErrors] = useState([]);
 
+
+    const isResponseProblemJson = (response) => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/problem+json") !== -1){
+            return true;
+        }
+        return false;
+    }
+
+    const activatePopupContent = (className) => {
+        document.querySelectorAll('.file-upload-popup').forEach(content => {
+            if (content.classList.contains(className)){
+                content.classList.add('active');
+            }
+            else {
+                content.classList.remove('active');
+            }
+        })
+    }
 
     const onPopupExit = (e) => {
         fileUploadContainer.current.classList.remove('active');
-        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+        setErrors([]);
+        activatePopupContent("spinner")
     }
 
     const navigateToHomePage = (e) => {
@@ -43,17 +64,26 @@ function Option3Form() {
     }
 
     const handleDownloadSongInfo = (e) => {
+        fileUploadContainer.current.classList.add('active');
         let linkArray = videoLink.split('v=');
         let ytID = linkArray[linkArray.length - 1];
 
         fetch(`https://youtube-video-download-info.p.rapidapi.com/dl?id=${ytID}`, downloadSongInfoOptions)
         .then(response => response.json())
         .then(youtubeInfo => {
-            console.log(youtubeInfo);
-            let authorTitleInfoArray = youtubeInfo.title.split("-");
-            setAuthor(authorTitleInfoArray[0]);
-            setTitle(authorTitleInfoArray[1]);
-            setImgLink(youtubeInfo.thumb)
+            if (youtubeInfo.status == "ok"){
+                console.log(youtubeInfo);
+                let authorTitleInfoArray = youtubeInfo.title.split("-");
+                setAuthor(authorTitleInfoArray[0]);
+                setTitle(authorTitleInfoArray[1]);
+                setImgLink(youtubeInfo.thumb);
+                fileUploadContainer.current.classList.remove('active');
+            }
+            else {
+                setErrors([...errors, "Youtube URL is invalid"]);
+                activatePopupContent("errors");
+            }
+
         })
         .catch(err => console.error(err));
     }
@@ -79,9 +109,9 @@ function Option3Form() {
             },
             body: JSON.stringify(song)  
         })
-        .then(resp => {
-            console.log(resp);
-            if (resp.ok){
+        .then(response => {
+            console.log(response);
+            if (response.ok){
                 fetch('api/DownloadYoutubeVideo', 
                 {
                     method: 'POST',
@@ -90,20 +120,36 @@ function Option3Form() {
                     },
                     body: JSON.stringify({videoPath, videoLink, imgPath, imgLink})  
                 })
-                .then(response => {
-                    console.log(response);
-                    if (response.ok){
-                        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+                .then(resp => {
+                    if (resp.ok){
+                        activatePopupContent("uploaded");
                     }
+                    console.log(resp)
+                    if (isResponseProblemJson(resp)){
+                        return resp.json().then(data => {
+                            if (data.errors != null){
+                                setErrors([...errors, ...Object.values(data.errors)]);
+                                activatePopupContent("errors");
+                            }
+                        });
+                    }                   
                 })
             }
-            return resp.json();
+            return response.json();
            
         })
-        .then(uploadedSong => setUploadedSongId(uploadedSong.id))
-        .catch(error => {
-            console.log(error);
-        });
+        .then((data) => {
+            if (data.errors != null){
+                setErrors([...errors, ...Object.values(data.errors)]);
+                activatePopupContent("errors");
+            }
+            else if (data.id != null){
+                setUploadedSongId(data.id);
+            }
+        })
+        // .catch(error => {
+        //     console.log("Catched error: ", error);
+        // });
     }
 
     return (
@@ -119,6 +165,10 @@ function Option3Form() {
                         <button onClick={navigateToHomePage}>Back to Home Page</button>
                         <button onClick={navigateToVideoCard}>Listen to the song</button>
                     </div>
+                </div>
+                <div className='file-upload-popup errors'>
+                    {errors && errors.map(err => <p className='error' key={err}>{err}</p>)}
+                    <button onClick={onPopupExit}>Back to form</button>
                 </div>
             </div>
             <form onSubmit={onSubmit}>

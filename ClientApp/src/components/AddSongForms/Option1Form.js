@@ -6,10 +6,9 @@ import { ReactComponent as Spinner} from './spinner.svg'
 function Option1Form() {
     const imgSelected = useRef();
     const imgInput = useRef();
-
     const audioSelected = useRef();
-    
     const fileUploadContainer = useRef();
+
     const history = useHistory();
 
     const [author, setAuthor] = useState('');
@@ -19,10 +18,31 @@ function Option1Form() {
     const [audio, setAudio] = useState();
     const [audioPath, setAudioPath] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
+    const [errors, setErrors] = useState([]);
+
+    const isResponseProblemJson = (response) => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/problem+json") !== -1){
+            return true;
+        }
+        return false;
+    }
+
+    const activatePopupContent = (className) => {
+        document.querySelectorAll('.file-upload-popup').forEach(content => {
+            if (content.classList.contains(className)){
+                content.classList.add('active');
+            }
+            else {
+                content.classList.remove('active');
+            }
+        })
+    }
 
     const onPopupExit = (e) => {
         fileUploadContainer.current.classList.remove('active');
-        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+        setErrors([]);
+        activatePopupContent("spinner")
     }
 
     const navigateToHomePage = (e) => {
@@ -30,7 +50,7 @@ function Option1Form() {
     }
 
     const navigateToVideoCard = (e) => {
-        history.push(`audiocard/${uploadedSongId}`)
+        history.push(`audiocard/${uploadedSongId}`);
     }
 
     const onSubmit = (e) => {
@@ -54,34 +74,41 @@ function Option1Form() {
                 body: JSON.stringify(song)  
             })
         .then(response => {
-            if (!response.ok){
-                alert('Error');
-                throw new Error("Something went wrong!");
-            }
-            else{
+            if (response.ok){
                 console.log(formData);
                 fetch('api/UploadFile', {
                     method: 'POST',
                     body: formData
                 })
                 .then(resp => {
-                    if (!resp.ok){
-                        alert('Error');
-                        throw new Error("Something went wrong!");
+                    if (resp.ok){
+                        activatePopupContent("uploaded");
                     }
-                    else {
-                        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
-                    }
-                    return resp.text()
+                    console.log(resp)
+                    if (isResponseProblemJson(resp)){
+                        return resp.json().then(data => {
+                            if (data.errors != null){
+                                setErrors([...errors, ...Object.values(data.errors)]);
+                                activatePopupContent("errors");
+                            }
+                        });
+                    }                   
                 })
-                .then(data => console.log(data));
             }
             return response.json();
         })
-        .then(uploadedSong => setUploadedSongId(uploadedSong.id))
-        .catch(error => {
-            console.log(error);
-        });
+        .then((data) => {
+            if (data.errors != null){
+                setErrors([...errors, ...Object.values(data.errors)]);
+                activatePopupContent("errors");
+            }
+            else if (data.id != null){
+                setUploadedSongId(data.id);
+            }
+        })
+        // .catch(error => {
+        //     console.log("Catched error: ", error);
+        // });
     }
 
     const handleImgChange = (e) => {
@@ -120,6 +147,10 @@ function Option1Form() {
                         <button onClick={navigateToHomePage}>Back to Home Page</button>
                         <button onClick={navigateToVideoCard}>Listen to the song</button>
                     </div>
+                </div>
+                <div className='file-upload-popup errors'>
+                    {errors && errors.map(err => <p className='error' key={err}>{err}</p>)}
+                    <button onClick={onPopupExit}>Back to form</button>
                 </div>
             </div>
             <form onSubmit={onSubmit}>

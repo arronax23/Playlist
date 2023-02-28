@@ -20,11 +20,31 @@ function Option2Form() {
     const [video, setVideo] = useState();
     const [videoPath, setVideoPath] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
+    const [errors, setErrors] = useState([]);
 
+    const isResponseProblemJson = (response) => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/problem+json") !== -1){
+            return true;
+        }
+        return false;
+    }
+
+    const activatePopupContent = (className) => {
+        document.querySelectorAll('.file-upload-popup').forEach(content => {
+            if (content.classList.contains(className)){
+                content.classList.add('active');
+            }
+            else {
+                content.classList.remove('active');
+            }
+        })
+    }
 
     const onPopupExit = (e) => {
         fileUploadContainer.current.classList.remove('active');
-        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+        setErrors([]);
+        activatePopupContent("spinner")
     }
 
     const navigateToHomePage = (e) => {
@@ -58,29 +78,41 @@ function Option2Form() {
                 body: JSON.stringify(song)  
             })
         .then(response => {
-            if (!response.ok){
-                alert('Error');
-                throw new Error("Something went wrong!");
-            }
-            else{
+            if (response.ok){
                 console.log(formData);
                 fetch('api/UploadVideoFile', {
                     method: 'POST',
                     body: formData
-                  })
-                  .then(resp => {
-                    console.log(resp);
+                })
+                .then(resp => {
                     if (resp.ok){
-                        document.querySelectorAll('.file-upload-popup').forEach(item => item.classList.toggle('active'));
+                        activatePopupContent("uploaded");
                     }
-                });
-                return response.json()
+                    console.log(resp)
+                    if (isResponseProblemJson(resp)){
+                        return resp.json().then(data => {
+                            if (data.errors != null){
+                                setErrors([...errors, ...Object.values(data.errors)]);
+                                activatePopupContent("errors");
+                            }
+                        });
+                    }                   
+                })
+            }
+            return response.json()
+        })
+        .then((data) => {
+            if (data.errors != null){
+                setErrors([...errors, ...Object.values(data.errors)]);
+                activatePopupContent("errors");
+            }
+            else if (data.id != null){
+                setUploadedSongId(data.id);
             }
         })
-        .then(uploadedSong => setUploadedSongId(uploadedSong.id))
-        .catch(error => {
-            console.log(error);
-        });
+        // .catch(error => {
+        //     console.log("Catched error: ", error);
+        // });
     }
 
     const handleImgChange = (e) => {
@@ -119,6 +151,10 @@ function Option2Form() {
                         <button onClick={navigateToHomePage}>Back to Home Page</button>
                         <button onClick={navigateToVideoCard}>Listen to the song</button>
                     </div>
+                </div>
+                <div className='file-upload-popup errors'>
+                    {errors && errors.map(err => <p className='error' key={err}>{err}</p>)}
+                    <button onClick={onPopupExit}>Back to form</button>
                 </div>
             </div>
             <form onSubmit={onSubmit}>

@@ -12,8 +12,6 @@ namespace Playlist.Controllers;
 [ApiController]
 public class YoutubeController : ControllerBase
 {
-    private static double progress = 0;
-
     [NonAction]
     public async Task DownloadImage(string url, string imgPath)
     {
