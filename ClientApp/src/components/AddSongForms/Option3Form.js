@@ -20,7 +20,7 @@ function Option3Form() {
     // const [videoPath, setVideoPath] = useState('');
     const customImg = true;
     // const [imgPath, setImgPath] = useState('');
-    const [imgLink, setImgLink] = useState('');
+    // const [imgLink, setImgLink] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
     const [errors, setErrors] = useState([]);
 
@@ -65,32 +65,39 @@ function Option3Form() {
 
     const handleDownloadSongInfo = (e) => {
         fileUploadContainer.current.classList.add('active');
+        fetchSongInfo(true, false);
+    }
+
+    const fetchSongInfo = async (setAuthorAndTitle, setImg) =>{
         let linkArray = videoLink.split('v=');
         let ytID = linkArray[linkArray.length - 1];
 
-        fetch(`https://youtube-video-download-info.p.rapidapi.com/dl?id=${ytID}`, downloadSongInfoOptions)
-        .then(response => response.json())
-        .then(youtubeInfo => {
-            if (youtubeInfo.status == "ok"){
-                console.log(youtubeInfo);
-                let authorTitleInfoArray = youtubeInfo.title.split("-");
+        let response = await fetch(`https://youtube-video-download-info.p.rapidapi.com/dl?id=${ytID}`, downloadSongInfoOptions);
+        let youtubeInfo = await response.json();
+        
+        if (youtubeInfo.status == "ok"){
+            console.log(youtubeInfo);
+            let authorTitleInfoArray = youtubeInfo.title.split("-");
+            if (setAuthorAndTitle){
                 setAuthor(authorTitleInfoArray[0]);
                 setTitle(authorTitleInfoArray[1]);
-                setImgLink(youtubeInfo.thumb);
-                fileUploadContainer.current.classList.remove('active');
             }
-            else {
-                setErrors([...errors, "Youtube URL is invalid"]);
-                activatePopupContent("errors");
+            else if (setImg){
+                return youtubeInfo.thumb;
             }
-
-        })
-        .catch(err => console.error(err));
+            fileUploadContainer.current.classList.remove('active');
+        }
+        else {
+            setErrors([...errors, "Youtube URL is invalid"]);
+            activatePopupContent("errors");
+        }
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
+
+        let imgLink = await fetchSongInfo(false,true);
 
         let videoUUID = uuidv4();
         let videoPath = `${videoUUID}.mp4`;
@@ -98,6 +105,7 @@ function Option3Form() {
         let imgUUID = uuidv4();
         let imgLinkArray = imgLink.split('.');
         let imgExtension = imgLinkArray[imgLinkArray.length - 1];
+        
         let imgPath = `${imgUUID}.${imgExtension}`;
 
         const song = {author, title, customImg, videoPath, imgPath};
