@@ -6,8 +6,14 @@ namespace Playlist.Data;
 
 public class MongoDBService
 {
-    private static readonly string _connectionString = "***REMOVED***";
-    private readonly MongoClient _client = new MongoClient(_connectionString);
+    private static string? _connectionString;
+    private readonly MongoClient _client;
+
+    public MongoDBService(IConfiguration configuration)
+    {
+        _connectionString = configuration["ConnectionStrings:MongoDbConnection"];
+        _client = new MongoClient(_connectionString);
+    }
 
     public IEnumerable<CollectionType> ReadCollection<CollectionType>(string database, string collection)
     {
