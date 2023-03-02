@@ -11,8 +11,10 @@ public class VideoSong : IDocument
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
     [Required]
+    [StringLength(30)]
     public string Author { get; set; } = null!;
     [Required]
+    [StringLength(30)]
     public string Title { get; set; } = null!;
     public bool CustomImg { get; set; }
     public string ImgPath { get; set; } = null!;
