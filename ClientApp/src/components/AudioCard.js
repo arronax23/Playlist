@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import useFetchGet from './../customHooks/useFetchGet'
 import { ReactComponent as AudioAnimation} from './audioAnimation.svg'
 import { useParams } from 'react-router-dom'
@@ -13,6 +13,34 @@ function AudioCard() {
     const stopButton = useRef();
     const progress = useRef();
     const wave = useRef();
+    const [timeStamp, setTimeStamp] = useState();
+
+
+    const getSelectedAudioBarTime = (e) => {
+        var rect = e.target.getBoundingClientRect();
+        const min = rect.left;
+        const max = rect.right;
+        const positionX = e.clientX - rect.left;
+        const percentage  = 100* positionX / (max - min);
+        const duration =  audio.current.duration;
+        const selectedTime = percentage * duration / 100;
+        return selectedTime;
+    }
+    
+    const onAudioBarMouseMove = (e) => {
+        if (e.target.classList.contains("audio-bar")){
+            const selectedTime = getSelectedAudioBarTime(e);
+            const minutes = Math.floor(selectedTime / 60); 
+            const seconds =  Math.floor(selectedTime  % 60);
+            setTimeStamp(`${minutes}:${seconds}`) 
+        }
+    }
+
+    const onAudioBarClick = (e) => {
+        if (e.target.classList.contains("audio-bar")){
+            audio.current.currentTime = getSelectedAudioBarTime(e);
+        }
+    }
 
     const onTimeUpdate = () => {
 
@@ -64,10 +92,6 @@ function AudioCard() {
         audio.current.currentTime += 10;
     }
 
-
-
-
-    
     return (
         song && 
         (
@@ -82,8 +106,8 @@ function AudioCard() {
                 <div className="audiocard-title">
                     {song.title}
                 </div>
-                <div className="audio-bar">
-                    <div className="audio-bar-progress"  ref={progress}>
+                <div className="audio-bar" title={timeStamp} onMouseMove={onAudioBarMouseMove} onClick={onAudioBarClick} >
+                    <div className="audio-bar-progress" ref={progress}>
                     </div>
                 </div>
                 <div className="audio-buttons">

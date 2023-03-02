@@ -7,7 +7,7 @@ function Option3Form() {
     const downloadSongInfoOptions = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': '***REMOVED***',
+            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
             'X-RapidAPI-Host': 'youtube-video-download-info.p.rapidapi.com'
         }
     };

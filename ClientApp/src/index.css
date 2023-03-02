@@ -385,6 +385,7 @@ img {
 }
 
 .audio-bar {
+  cursor: pointer;
   background: white;
   width: 100%;
   height: 0.3rem;
@@ -392,9 +393,9 @@ img {
 }
 
 .audio-bar-progress {
+  pointer-events: none;
   height: 100%;
   width: 0;
-  /* background: #817F82; */
   background: #B9314F;
 }
 

@@ -8,6 +8,8 @@ function VideoCard() {
     const {data : videoSong, isPending, error, httpResposne} = useFetchGet(`/api/GetOneVideoSong/${id}`);
     
     const [isStart, setIsStart] = useState(true);
+    const [timeStamp, setTimeStamp] = useState();
+
     const video = useRef();
     const playButton = useRef();
     const pauseButton = useRef();
@@ -16,6 +18,33 @@ function VideoCard() {
 
     const imgDiv = useRef();
     const videoDiv = useRef();
+
+
+    const getSelectedAudioBarTime = (e) => {
+        var rect = e.target.getBoundingClientRect();
+        const min = rect.left;
+        const max = rect.right;
+        const positionX = e.clientX - rect.left;
+        const percentage  = 100* positionX / (max - min);
+        const duration =  video.current.duration;
+        const selectedTime = percentage * duration / 100;
+        return selectedTime;
+    }
+    
+    const onAudioBarMouseMove = (e) => {
+        if (e.target.classList.contains("audio-bar")){
+            const selectedTime = getSelectedAudioBarTime(e);
+            const minutes = Math.floor(selectedTime / 60); 
+            const seconds =  Math.floor(selectedTime  % 60);
+            setTimeStamp(`${minutes}:${seconds}`) 
+        }
+    }
+
+    const onAudioBarClick = (e) => {
+        if (e.target.classList.contains("audio-bar")){
+            video.current.currentTime = getSelectedAudioBarTime(e);
+        }
+    }
 
     const onTimeUpdate = () => {
 
@@ -107,7 +136,7 @@ function VideoCard() {
                 <div className="audiocard-title">
                     {videoSong.title}
                 </div>
-                <div className="audio-bar">
+                <div className="audio-bar"  title={timeStamp} onMouseMove={onAudioBarMouseMove} onClick={onAudioBarClick}>
                     <div className="audio-bar-progress"  ref={progress}>
                     </div>
                 </div>
