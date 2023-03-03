@@ -236,3 +236,6 @@ wwwroot/
 .env
 .env.development
 .env.development.local
+
+appsettings.json
+appsettings.Development.json

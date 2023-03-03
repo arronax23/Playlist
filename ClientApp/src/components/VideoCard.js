@@ -15,6 +15,8 @@ function VideoCard() {
     const pauseButton = useRef();
     const stopButton = useRef();
     const progress = useRef();
+    const volumeContainer = useRef();
+    const volumeProgress = useRef();
 
     const imgDiv = useRef();
     const videoDiv = useRef();
@@ -35,7 +37,10 @@ function VideoCard() {
         if (e.target.classList.contains("audio-bar")){
             const selectedTime = getSelectedAudioBarTime(e);
             const minutes = Math.floor(selectedTime / 60); 
-            const seconds =  Math.floor(selectedTime  % 60);
+            let seconds =  Math.floor(selectedTime  % 60);
+            if (seconds < 10){
+                seconds = `0${seconds}`
+            }
             setTimeStamp(`${minutes}:${seconds}`) 
         }
     }
@@ -43,6 +48,22 @@ function VideoCard() {
     const onAudioBarClick = (e) => {
         if (e.target.classList.contains("audio-bar")){
             video.current.currentTime = getSelectedAudioBarTime(e);
+        }
+    }
+
+    const onVolumeBarClick = (e) => {
+        if (e.target.classList.contains("volume-bar")){
+            var rect = e.target.getBoundingClientRect();
+            const min = rect.left;
+            const max = rect.right;
+            const positionX = e.clientX - rect.left;
+            const percentage  = 100* positionX / (max - min);
+            const volume  = positionX / (max - min);
+            video.current.volume = volume;
+            console.log(volume);
+            const color = -0.5 * percentage + 75;
+            volumeProgress.current.style.background =  `hsl(155, 17%, ${color}%)`;
+            volumeProgress.current.style.width =  `${percentage}%`;
         }
     }
 
@@ -98,6 +119,10 @@ function VideoCard() {
         video.current.currentTime += 10;
     }
 
+    const onDisplayVolumeContainer =  () => {
+        volumeContainer.current.classList.toggle('hide');
+    }
+
     return (
         videoSong && 
         (
@@ -146,8 +171,17 @@ function VideoCard() {
                     <i className="fa-solid fa-pause" title="Pause" onClick={onPause} ref={pauseButton}></i>
                     <i className="fa-solid fa-stop" title="Stop" onClick={onStop} ref={stopButton}></i>
                     <i className="fa-solid fa-forward" title="+10s" onClick={onForward}></i>
+                    <i className="fa-solid fa-volume-high" title="Show/Hide Volume Bar" onClick={onDisplayVolumeContainer}></i>
+                </div>
+                <div className="volume-container hide" ref={volumeContainer}>
+                    <div className="volume-bar" onClick={onVolumeBarClick}>
+                        <div className="volume-bar-progress" ref={volumeProgress}>
+                        </div>
+                    </div>
+                    <i className="fa-solid fa-volume-high"></i>
                 </div>
             </div>
+
         </div>
         )  
     )
