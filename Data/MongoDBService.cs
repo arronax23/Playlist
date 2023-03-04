@@ -8,29 +8,31 @@ public class MongoDBService
 {
     private static string? _connectionString;
     private readonly MongoClient _client;
+    private string _database;
 
     public MongoDBService(IConfiguration configuration)
     {
         _connectionString = configuration["ConnectionStrings:MongoDbConnection"];
+        _database = configuration["ConnectionStrings:Database"];
         _client = new MongoClient(_connectionString);
     }
 
-    public IEnumerable<CollectionType> ReadCollection<CollectionType>(string database, string collection)
+    public IEnumerable<CollectionType> ReadCollection<CollectionType>(string collection)
     {
         var mongoCollection =
             _client
-                .GetDatabase(database)
+                .GetDatabase(_database)
                 .GetCollection<CollectionType>(collection);
 
         return mongoCollection.AsQueryable().AsEnumerable();
     }
 
-    public CollectionType GetOneDocument<CollectionType>(string database, string collection, string? id)
+    public CollectionType GetOneDocument<CollectionType>(string collection, string? id)
               where CollectionType : IDocument
     {
         var mongoCollection =
             _client
-                .GetDatabase(database)
+                .GetDatabase(_database)
                 .GetCollection<CollectionType>(collection);
 
         var document = mongoCollection.Find(doc => doc.Id == id).SingleOrDefault();
@@ -38,23 +40,23 @@ public class MongoDBService
     }
 
 
-    public void Insert<CollectionType>(string database, string collection, CollectionType document)
+    public void Insert<CollectionType>(string collection, CollectionType document)
     {
         var mongoCollection =
             _client
-                .GetDatabase(database)
+                .GetDatabase(_database)
                 .GetCollection<CollectionType>(collection);
 
         mongoCollection.InsertOne(document);
     }
 
 
-    public void Update<CollectionType>(string database, string collection, string? id, CollectionType newDocument)
+    public void Update<CollectionType>(string collection, string? id, CollectionType newDocument)
         where CollectionType : IDocument
     {
         var mongoCollection =
             _client
-                .GetDatabase(database)
+                .GetDatabase(_database)
                 .GetCollection<CollectionType>(collection);
 
         var properties = typeof(CollectionType).GetProperties();
@@ -73,12 +75,12 @@ public class MongoDBService
         mongoCollection.UpdateOne(filterDefinition, updateDefinitionBuilder.Combine(updateDefinitionList));
     }
 
-    public void DeleteDocument<CollectionType>(string database, string collection, string? id)
+    public void DeleteDocument<CollectionType>(string collection, string? id)
         where CollectionType : IDocument
     {
         var mongoCollection =
             _client
-                .GetDatabase(database)
+                .GetDatabase(_database)
                 .GetCollection<CollectionType>(collection);
 
 

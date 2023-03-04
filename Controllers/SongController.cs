@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver.Core.Configuration;
 using Playlist.Data;
 using Playlist.Models;
 using System.Data;
@@ -15,7 +16,6 @@ namespace Playlist.Controllers;
 public class SongController : ControllerBase
 {
     private readonly MongoDBService _mongoDBService;
-    private readonly string _database = "playlist";
     private readonly string _collection = "song";
 
     public SongController(MongoDBService mongoDBService)
@@ -26,19 +26,19 @@ public class SongController : ControllerBase
     [HttpGet("api/GetAllSongs")]
     public IEnumerable<Song> GetAllSongs()
     {
-        return _mongoDBService.ReadCollection<Song>(_database, _collection);
+        return _mongoDBService.ReadCollection<Song>(_collection);
     }
 
     [HttpGet("api/GetOneSong/{id}")]
     public Song GetOneSong(string? id)
     {
-        return _mongoDBService.GetOneDocument<Song>(_database, _collection, id);
+        return _mongoDBService.GetOneDocument<Song>(_collection, id);
     }
 
     [HttpPost("api/AddSong")]
     public IActionResult AddSong(Song song)
     {
-        _mongoDBService.Insert(_database, _collection, song);
+        _mongoDBService.Insert(_collection, song);
 
         return Created($"api/GetOneVideoSong/{song.Id}", song);
     }
@@ -64,9 +64,9 @@ public class SongController : ControllerBase
     [HttpDelete("api/DeleteSong/{id}")]
     public IActionResult DeleteSong(string? id)
     {
-        var song = _mongoDBService.GetOneDocument<Song>(_database, _collection, id);
-        
-        _mongoDBService.DeleteDocument<Song>(_database, _collection, id);
+        var song = _mongoDBService.GetOneDocument<Song>(_collection, id);
+            
+        _mongoDBService.DeleteDocument<Song>(_collection, id);
 
         string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
         string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioPath);

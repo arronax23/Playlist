@@ -12,7 +12,7 @@ function AudioCard() {
     const pauseButton = useRef();
     const stopButton = useRef();
     const progress = useRef();
-    const wave = useRef();
+    // const wave = useRef();
     const volumeContainer = useRef();
     const volumeProgress = useRef();
 
@@ -75,7 +75,7 @@ function AudioCard() {
             playButton.current.style.display = 'inline-block'
             pauseButton.current.style.display = 'none'
             stopButton.current.style.display = 'none'
-            wave.current.style.display = 'none'
+            // wave.current.style.display = 'none'
         }
     }
 
@@ -85,7 +85,7 @@ function AudioCard() {
         playButton.current.style.display = 'none'
         pauseButton.current.style.display = 'inline-block'
         stopButton.current.style.display = 'inline-block'
-        wave.current.style.display = 'block'
+        // wave.current.style.display = 'block'
     }
 
     const onPause = () => {
@@ -94,7 +94,7 @@ function AudioCard() {
         playButton.current.style.display = 'inline-block'
         pauseButton.current.style.display = 'none'
         stopButton.current.style.display = 'inline-block'
-        wave.current.style.display = 'none'
+        // wave.current.style.display = 'none'
     }
 
     const onStop = () => {
@@ -104,7 +104,7 @@ function AudioCard() {
         playButton.current.style.display = 'inline-block'
         pauseButton.current.style.display = 'none'
         stopButton.current.style.display = 'none'
-        wave.current.style.display = 'none'
+        // wave.current.style.display = 'none'
     }
 
     const onBackward = () => {

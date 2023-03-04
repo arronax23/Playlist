@@ -10,7 +10,6 @@ namespace Playlist.Controllers;
 public class VideoSongController : ControllerBase
 {
     private readonly MongoDBService _mongoDBService;
-    private readonly string _database = "playlist";
     private readonly string _collection = "videoSong";
 
     public VideoSongController(MongoDBService mongoDBService)
@@ -21,19 +20,19 @@ public class VideoSongController : ControllerBase
     [HttpGet("api/GetAllVideoSongs")]
     public IEnumerable<VideoSong> GetAllSongs()
     {
-        return _mongoDBService.ReadCollection<VideoSong>(_database, _collection);
+        return _mongoDBService.ReadCollection<VideoSong>(_collection);
     }
 
     [HttpGet("api/GetOneVideoSong/{id}")]
     public VideoSong GetOneSong(string? id)
     {
-        return _mongoDBService.GetOneDocument<VideoSong>(_database, _collection, id);
+        return _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
     }
 
     [HttpPost("api/AddVideoSong")]
     public IActionResult AddSong(VideoSong song)
     {
-        _mongoDBService.Insert(_database, _collection, song);
+        _mongoDBService.Insert(_collection, song);
 
         return Created($"api/GetOneVideoSong/{song.Id}", song);
     }
@@ -69,9 +68,9 @@ public class VideoSongController : ControllerBase
     [HttpDelete("api/DeleteVideoSong/{id}")]
     public IActionResult DeleteSong(string? id)
     {
-        var song = _mongoDBService.GetOneDocument<VideoSong>(_database, _collection, id);
+        var song = _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
         
-        _mongoDBService.DeleteDocument<Song>(_database, _collection, id);
+        _mongoDBService.DeleteDocument<Song>(_collection, id);
 
         try
         {
