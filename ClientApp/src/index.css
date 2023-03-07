@@ -99,13 +99,13 @@ nav ul li:hover {
 }
 
 @media screen and (min-width: 400px) {
-  nav ul li:hover {
+  nav ul li.nav-item:hover {
     background-color: unset;
     color: white;
     /* border-bottom: 1px solid white; */
   }
 
-  nav ul li:hover::after {
+  nav ul li.nav-item:hover::after {
     content: "";
     background: white;
     position: absolute;
@@ -118,6 +118,7 @@ nav ul li:hover {
 }
 
 nav ul li.logo {
+  border-radius: .1rem;
   margin: 0;
   width: 2em;
   background: white;

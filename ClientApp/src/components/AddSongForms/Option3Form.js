@@ -96,69 +96,59 @@ function Option3Form() {
     const onSubmit = async (e) => {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
-
-        let imgLink = await fetchSongInfo(false,true);
-
-        let videoUUID = uuidv4();
-        let videoPath = `${videoUUID}.mp4`;
-        
-        let imgUUID = uuidv4();
-        let imgLinkArray = imgLink.split('.');
-        let imgExtension = imgLinkArray[imgLinkArray.length - 1];
-        
-        let imgPath = `${imgUUID}.${imgExtension}`;
-
-        const song = {author, title, customImg, videoPath, imgPath};
-        fetch('api/AddVideoSong', 
-        {
+    
+        const imgLink = await fetchSongInfo(false, true);
+    
+        const videoUUID = uuidv4();
+        const videoPath = `${videoUUID}.mp4`;
+    
+        const imgUUID = uuidv4();
+        const imgLinkArray = imgLink.split('.');
+        const imgExtension = imgLinkArray[imgLinkArray.length - 1];
+        const imgPath = `${imgUUID}.${imgExtension}`;
+    
+        const song = { author, title, customImg, videoPath, imgPath };
+    
+        const addSongResponse = await fetch('api/AddVideoSong', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(song)  
-        })
-        .then(response => {
-            console.log(response);
-            if (response.ok){
-                fetch('api/DownloadYoutubeVideo', 
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({videoPath, videoLink, imgPath, imgLink})  
-                })
-                .then(resp => {
-                    if (resp.ok){
-                        activatePopupContent("uploaded");
-                    }
-                    console.log(resp)
-                    if (isResponseProblemJson(resp)){
-                        return resp.json().then(data => {
-                            if (data.errors != null){
-                                setErrors([...errors, ...Object.values(data.errors)]);
-                                activatePopupContent("errors");
-                            }
-                        });
-                    }                   
-                })
+            body: JSON.stringify(song)
+        });
+    
+        if (addSongResponse.ok) {
+            const downloadYTResponse = await fetch('api/DownloadYoutubeVideo', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ videoPath, videoLink, imgPath, imgLink })
+            });
+        
+            if (downloadYTResponse.ok) {
+                activatePopupContent("uploaded");
             }
-            return response.json();
-           
-        })
-        .then((data) => {
-            if (data.errors != null){
-                setErrors([...errors, ...Object.values(data.errors)]);
+        
+            if (isResponseProblemJson(downloadYTResponse)) {
+                const downloadYTResponseData = await downloadYTResponse.json();
+                if (downloadYTResponseData.errors != null) {
+                setErrors([...errors, ...Object.values(downloadYTResponseData.errors)]);
                 activatePopupContent("errors");
+                }
             }
-            else if (data.id != null){
-                setUploadedSongId(data.id);
-            }
-        })
-        // .catch(error => {
-        //     console.log("Catched error: ", error);
-        // });
+        }
+    
+        const addSongResponseData = await addSongResponse.json();
+        if (addSongResponseData.errors != null) {
+            setErrors([...errors, ...Object.values(addSongResponseData.errors)]);
+            activatePopupContent("errors");
+        } 
+        else if (addSongResponseData.id != null) {
+            setUploadedSongId(addSongResponseData.id);
+        }
     }
+      
 
     return (
         <div className="form-container">

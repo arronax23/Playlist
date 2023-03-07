@@ -40,7 +40,7 @@ public class SongController : ControllerBase
     {
         _mongoDBService.Insert(_collection, song);
 
-        return Created($"api/GetOneVideoSong/{song.Id}", song);
+        return Created($"api/GetOneSong/{song.Id}", song);
     }
 
     [HttpPost("api/UploadFile")]

@@ -53,62 +53,55 @@ function Option1Form() {
         history.push(`audiocard/${uploadedSongId}`);
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
-
-        const song = {author, title, imgPath, audioPath};
+      
+        const song = { author, title, imgPath, audioPath };
         let formData = new FormData();
-        formData.append('img',img);
-        formData.append('imgPath',imgPath);
-        formData.append('audio',audio);
-        formData.append('audioPath',audioPath);
+        formData.append('img', img);
+        formData.append('imgPath', imgPath);
+        formData.append('audio', audio);
+        formData.append('audioPath', audioPath);
         console.log(song);
-
-        fetch('api/AddSong', 
-            {
+      
+        const addSongResponse = await fetch('api/AddSong', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(song),
+        });
+    
+        if (addSongResponse.ok) {
+            console.log(formData);
+            const uploadFileResponse = await fetch('api/UploadFile', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(song)  
-            })
-        .then(response => {
-            if (response.ok){
-                console.log(formData);
-                fetch('api/UploadFile', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(resp => {
-                    if (resp.ok){
-                        activatePopupContent("uploaded");
-                    }
-                    console.log(resp)
-                    if (isResponseProblemJson(resp)){
-                        return resp.json().then(data => {
-                            if (data.errors != null){
-                                setErrors([...errors, ...Object.values(data.errors)]);
-                                activatePopupContent("errors");
-                            }
-                        });
-                    }                   
-                })
+                body: formData,
+            });
+        
+            if (uploadFileResponse.ok) {
+                activatePopupContent('uploaded');
             }
-            return response.json();
-        })
-        .then((data) => {
-            if (data.errors != null){
-                setErrors([...errors, ...Object.values(data.errors)]);
-                activatePopupContent("errors");
+            console.log(uploadFileResponse);
+        
+            if (isResponseProblemJson(uploadFileResponse)) {
+                const uploadFileResponseData = await uploadFileResponse.json();
+                if (uploadFileResponseData.errors != null) {
+                setErrors([...errors, ...Object.values(uploadFileResponseData.errors)]);
+                activatePopupContent('errors');
+                }
             }
-            else if (data.id != null){
-                setUploadedSongId(data.id);
-            }
-        })
-        // .catch(error => {
-        //     console.log("Catched error: ", error);
-        // });
+        }
+    
+        const addSongResponseData = await addSongResponse.json();
+        if (addSongResponseData.errors != null) {
+            setErrors([...errors, ...Object.values(addSongResponseData.errors)]);
+            activatePopupContent('errors');
+        } 
+        else if (addSongResponseData.id != null) {
+            setUploadedSongId(addSongResponseData.id);
+        }
     }
 
     const handleImgChange = (e) => {
