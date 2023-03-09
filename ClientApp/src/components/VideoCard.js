@@ -123,6 +123,37 @@ function VideoCard() {
         volumeContainer.current.classList.toggle('hide');
     }
 
+    const onMinusClick = () => {
+        let volume = video.current.volume;
+        volume -= .1;
+        if (volume < 0){
+            volume = 0;
+        }
+        video.current.volume = volume;
+        console.log(video.current.volume);
+
+        const percentage = 100 * volume;
+        const color = -0.5 * percentage + 75;
+        volumeProgress.current.style.background =  `hsl(155, 17%, ${color}%)`;
+        volumeProgress.current.style.width =  `${percentage}%`;
+    }
+
+    const onPlusClick = () => {
+        let volume = video.current.volume;
+        volume += .1;
+        if (volume > 1){
+            volume = 1;
+        }
+        video.current.volume = volume;
+        console.log(video.current.volume);
+
+        const percentage = 100 * volume;
+        const color = -0.5 * percentage + 75;
+        volumeProgress.current.style.background =  `hsl(155, 17%, ${color}%)`;
+        volumeProgress.current.style.width =  `${percentage}%`;
+
+    }
+
     return (
         videoSong && 
         (
@@ -178,7 +209,12 @@ function VideoCard() {
                         <div className="volume-bar-progress" ref={volumeProgress}>
                         </div>
                     </div>
-                    <i className="fa-solid fa-volume-high"></i>
+                    <div className="controls">
+                        <i className="fa-regular fa-square-minus" title="Volume Down" onClick={onMinusClick}></i>
+                        <i className="fa-solid fa-volume-high"></i>
+                        <i className="fa-regular fa-square-plus" title="Volume Up" onClick={onPlusClick}></i>
+                    </div>
+
                 </div>
             </div>
 

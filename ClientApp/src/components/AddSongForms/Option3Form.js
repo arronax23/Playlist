@@ -71,6 +71,10 @@ function Option3Form() {
     const fetchSongInfo = async (setAuthorAndTitle, setImg) =>{
         let linkArray = videoLink.split('v=');
         let ytID = linkArray[linkArray.length - 1];
+        if (ytID.includes('&')){
+            ytID = ytID.split('&')[0];
+        }
+        console.log(ytID)
 
         let response = await fetch(`https://youtube-video-download-info.p.rapidapi.com/dl?id=${ytID}`, downloadSongInfoOptions);
         let youtubeInfo = await response.json();
