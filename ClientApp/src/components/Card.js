@@ -61,14 +61,22 @@ function Card({id, author, title, audioOrVideo, customImg, imgPath, videoPath })
         
     }
 
-    const handleDeleteCanceledClick = () => {
+    const cancelDelete = () => {
         cardDelete.current.classList.remove('hide');
         cardListen.current.classList.remove('card-listen-small');
         cardDeleteConfirmation.current.classList.add('hide')
     }
 
+    const handleDeleteCanceledClick = () => {
+        cancelDelete()
+    }
+
+    const handleMouseLeaveCard = (e) => {
+        cancelDelete()
+    }
+
   return (
-    <div className="card" ref={card}>
+    <div className="card" onMouseLeave={handleMouseLeaveCard} ref={card}>
         <div className="card-listen" onClick={handleListenClick} ref={cardListen}>Listen</div>
         <div className="card-delete" onClick={handleDeleteClick} ref={cardDelete}>Delete</div>
         <div className="card-delete-confirmation"  ref={cardDeleteConfirmation}>

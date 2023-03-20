@@ -127,23 +127,25 @@ function AudioCard() {
                 <div className="audiocard-image">
                     <img src={`/img/${song.imgPath}`} />
                 </div>
-                <div className="audiocard-author">
-                    {song.author}
-                </div>
-                <div className="audiocard-title">
-                    {song.title}
-                </div>
-                <div className="audio-bar" title={timeStamp} onMouseMove={onAudioBarMouseMove} onClick={onAudioBarClick} >
-                    <div className="audio-bar-progress" ref={progress}>
+                <div className="audiocard-content">     
+                    <div className="audiocard-author">
+                        {song.author}
                     </div>
-                </div>
-                <div className="audio-buttons">
-                    <i className="fa-solid fa-backward" title="-10s" onClick={onBackward}></i>
-                    <i className="fa-solid fa-play" title="Play" onClick={onPlay} ref={playButton}></i>
-                    <i className="fa-solid fa-pause" title="Pause" onClick={onPause} ref={pauseButton}></i>
-                    <i className="fa-solid fa-stop" title="Stop" onClick={onStop} ref={stopButton}></i>
-                    <i className="fa-solid fa-forward" title="+10s" onClick={onForward}></i>
-                    <i className="fa-solid fa-volume-high" title="Show/Hide Volume Bar" onClick={onDisplayVolumeContainer}></i>
+                    <div className="audiocard-title">
+                        {song.title}
+                    </div>
+                    <div className="audio-bar" title={timeStamp} onMouseMove={onAudioBarMouseMove} onClick={onAudioBarClick} >
+                        <div className="audio-bar-progress" ref={progress}>
+                        </div>
+                    </div>
+                    <div className="audio-buttons">
+                        <i className="fa-solid fa-backward" title="-10s" onClick={onBackward}></i>
+                        <i className="fa-solid fa-play" title="Play" onClick={onPlay} ref={playButton}></i>
+                        <i className="fa-solid fa-pause" title="Pause" onClick={onPause} ref={pauseButton}></i>
+                        <i className="fa-solid fa-stop" title="Stop" onClick={onStop} ref={stopButton}></i>
+                        <i className="fa-solid fa-forward" title="+10s" onClick={onForward}></i>
+                        <i className="fa-solid fa-volume-high" title="Show/Hide Volume Bar" onClick={onDisplayVolumeContainer}></i>
+                    </div>
                 </div>
                 <audio src={`/audio/${song.audioPath}`} ref={audio} onTimeUpdate={onTimeUpdate}></audio>
                 {/* <AudioAnimation ref={wave} /> */}

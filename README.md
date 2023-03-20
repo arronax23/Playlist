@@ -18,6 +18,6 @@ Playlist allows to store and listen to songs. They can by uploaded through audio
 
 ## Screenshots
 
-![Main Page Screenshot](./Playlist.png)
-![Add Song Page Screenshot](./AddSong.png)
-![VideoCard Screenshot](./VideoCard.png)
+![Main Page Screenshot](./img-README/Playlist.png)
+![Add Song Page Screenshot](./img-README/AddSong.png)
+![VideoCard Screenshot](./img-README/VideoCard.png)
