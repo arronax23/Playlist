@@ -151,7 +151,6 @@ function VideoCard() {
         const color = -0.5 * percentage + 75;
         volumeProgress.current.style.background =  `hsl(155, 17%, ${color}%)`;
         volumeProgress.current.style.width =  `${percentage}%`;
-
     }
 
     return (
@@ -215,7 +214,6 @@ function VideoCard() {
                         <i className="fa-solid fa-volume-high"></i>
                         <i className="fa-regular fa-square-plus" title="Volume Up" onClick={onPlusClick}></i>
                     </div>
-
                 </div>
             </div>
 
