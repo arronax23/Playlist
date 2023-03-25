@@ -1,89 +1,73 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver.Core.Configuration;
 using Playlist.Data;
 using Playlist.Models;
-using System.Data;
-using System.Numerics;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography;
+using Playlist.ViewModels;
 
-namespace Playlist.Controllers;
-
-[ApiController]
-public class SongController : ControllerBase
+namespace Playlist.Controllers
 {
-    private readonly MongoDBService _mongoDBService;
-    private readonly string _collection = "song";
-
-    public SongController(MongoDBService mongoDBService)
+    [ApiController]
+    public class SongController : ControllerBase
     {
-        _mongoDBService = mongoDBService;
-    }
+        private readonly MongoDBService _mongoDBService;
+        private readonly string _audioSongcollection = "song";
+        private readonly string _videoSongcollection = "videoSong";
 
-    [HttpGet("api/GetAllSongs")]
-    public IEnumerable<Song> GetAllSongs()
-    {
-        return _mongoDBService.ReadCollection<Song>(_collection);
-    }
-
-    [HttpGet("api/GetOneSong/{id}")]
-    public Song GetOneSong(string? id)
-    {
-        return _mongoDBService.GetOneDocument<Song>(_collection, id);
-    }
-
-    [HttpPost("api/AddSong")]
-    public IActionResult AddSong(Song song)
-    {
-        _mongoDBService.Insert(_collection, song);
-
-        return Created($"api/GetOneSong/{song.Id}", song);
-    }
-
-    [HttpPost("api/UploadFile")]
-    public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
-    {
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"wwwroot\\img", imgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", audioPath);
-
-        using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
+        public SongController(MongoDBService mongoDBService)
         {
-            img.CopyTo(fileStream);
+            _mongoDBService = mongoDBService;
         }
 
-        using (FileStream fileStream = new FileStream(audioAbsolutePath, FileMode.Create))
+        [HttpGet("api/GetAudioAndVideoSongsForPage/{currentPage}/{songsPerPage}")]
+        public IEnumerable<SongVM> GetAudioAndVideoSongsPerPage(int currentPage, int songsPerPage)
         {
-            audio.CopyTo(fileStream);
+            var audioSongs =  _mongoDBService.ReadCollection<AudioSong>(_audioSongcollection);
+            var videoSongs =  _mongoDBService.ReadCollection<VideoSong>(_videoSongcollection);
+
+            List<SongVM> songs = new List<SongVM>();
+            songs.AddRange(audioSongs.Select(audioSong => new SongVM()
+            {
+                Id= audioSong.Id,
+                Type = SongType.Audio,
+                Author= audioSong.Author,
+                Title= audioSong.Title,
+                ImgPath= audioSong.ImgPath,
+                AudioPath= audioSong.AudioPath,
+                CreatedDate= audioSong.CreatedDate
+            }));
+
+            songs.AddRange(videoSongs.Select(videoSong => new SongVM()
+            {
+                Id = videoSong.Id,
+                Type = SongType.Video,
+                Author = videoSong.Author,
+                Title = videoSong.Title,
+                CustomImg = videoSong.CustomImg,
+                ImgPath = videoSong.ImgPath,
+                VideoPath = videoSong.VideoPath,
+                CreatedDate = videoSong.CreatedDate
+            }));
+
+            songs = songs
+                .OrderBy(s => s.CreatedDate)
+                .Skip((currentPage - 1) * songsPerPage)
+                .Take(songsPerPage)
+                .ToList();
+
+            return songs;
+
         }
-        return Ok();
-    }
 
-    [HttpDelete("api/DeleteSong/{id}")]
-    public IActionResult DeleteSong(string? id)
-    {
-        var song = _mongoDBService.GetOneDocument<Song>(_collection, id);
-            
-        _mongoDBService.DeleteDocument<Song>(_collection, id);
-
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioPath);
-
-
-        try
+        [HttpGet("api/GetSongsTotalCount")]
+        public int GetSongsTotalCount()
         {
-            System.IO.File.Delete(imgAbsolutePath);
-            System.IO.File.Delete(audioAbsolutePath);
+
+            var audioSongs = _mongoDBService.ReadCollection<AudioSong>(_audioSongcollection);
+            var videoSongs = _mongoDBService.ReadCollection<VideoSong>(_videoSongcollection);
+
+            int totalCount = audioSongs.Count() + videoSongs.Count();
+
+            return totalCount;
         }
-        catch (Exception)
-        {
-
-            return Ok("Files were not deleted");
-        }
-
-
-        return Ok();
     }
 }

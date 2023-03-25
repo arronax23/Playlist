@@ -32,6 +32,7 @@ public class VideoSongController : ControllerBase
     [HttpPost("api/AddVideoSong")]
     public IActionResult AddSong(VideoSong song)
     {
+        song.CreatedDate = DateTime.Now;
         _mongoDBService.Insert(_collection, song);
 
         return Created($"api/GetOneVideoSong/{song.Id}", song);
@@ -70,7 +71,7 @@ public class VideoSongController : ControllerBase
     {
         var song = _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
         
-        _mongoDBService.DeleteDocument<Song>(_collection, id);
+        _mongoDBService.DeleteDocument<AudioSong>(_collection, id);
 
         try
         {

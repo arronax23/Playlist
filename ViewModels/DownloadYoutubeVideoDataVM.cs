@@ -2,7 +2,7 @@
 
 namespace Playlist.ViewModels;
 
-public class DownloadYoutubeVideoData
+public class DownloadYoutubeVideoDataVM
 {
     [Required]
     public string VideoPath { get; set; } = null!;

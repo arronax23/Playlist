@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Playlist.Models;
 
-public class Song : IDocument
+public class AudioSong : IDocument
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -18,5 +18,6 @@ public class Song : IDocument
     public string Title { get; set; } = null!;
     public string ImgPath { get; set; } = null!;
     public string AudioPath { get; set; } = null!;
+    public DateTime CreatedDate { get; set; }
 
 }

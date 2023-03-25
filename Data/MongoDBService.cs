@@ -27,6 +27,7 @@ public class MongoDBService
         return mongoCollection.AsQueryable().AsEnumerable();
     }
 
+
     public CollectionType GetOneDocument<CollectionType>(string collection, string? id)
               where CollectionType : IDocument
     {

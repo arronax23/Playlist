@@ -25,7 +25,7 @@ public class YoutubeController : ControllerBase
     }
 
     [Route("api/DownloadYoutubeVideo")]
-    public async Task<IActionResult> Download(DownloadYoutubeVideoData downloadData)
+    public async Task<IActionResult> Download(DownloadYoutubeVideoDataVM downloadData)
     {
         string filePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\video", downloadData.VideoPath);
         var youtube = new YoutubeClient();

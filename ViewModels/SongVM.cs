@@ -1,23 +1,21 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Playlist.Models.Interfaces;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 
-namespace Playlist.Models;
+namespace Playlist.ViewModels;
 
-public class VideoSong : IDocument
+public enum SongType {Audio , Video };
+public class SongVM
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
-    [Required]
-    [StringLength(30)]
+    public SongType Type { get; set; }
     public string Author { get; set; } = null!;
-    [Required]
-    [StringLength(30)]
     public string Title { get; set; } = null!;
     public bool CustomImg { get; set; }
     public string ImgPath { get; set; } = null!;
+    public string AudioPath { get; set; } = null!;
     public string VideoPath { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
 }

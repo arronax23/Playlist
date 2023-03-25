@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="NewFolder\" />
     <Folder Include="wwwroot\img\" />
     <Folder Include="wwwroot\audio\" />
     <Folder Include="wwwroot\video\" />

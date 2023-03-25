@@ -57,7 +57,7 @@ function Option1Form() {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
       
-        const song = { author, title, imgPath, audioPath };
+        const song = { author, title, imgPath, audioPath};
         let formData = new FormData();
         formData.append('img', img);
         formData.append('imgPath', imgPath);

@@ -148,6 +148,16 @@ nav ul li.logo {
   }
 }
 
+.cards-page {
+  height: 90%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
 
 .cards-container {
   height: 90%;
@@ -156,6 +166,12 @@ nav ul li.logo {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+}
+
+@media screen and (max-width: 700px) {
+  .cards-page, .cards-container {
+    height: auto;
+  }
 }
 
 img {
@@ -594,7 +610,12 @@ img {
 }
 
 
-.option {
+.pagination-buttons {
+  display: flex;
+  gap: .5rem;
+}
+
+.option, .pagination-btn  {
   font-size: 1.5rem;
   background-color: black;
   border: 5px solid white;
@@ -609,7 +630,7 @@ img {
   transition: all .25s;
 }
 
-.options-list .option.active {
+.options-list .option.active, .pagination-btn.active {
   background-color: white;
   border: 5px solid white;
   color: black;
