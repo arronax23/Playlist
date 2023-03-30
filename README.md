@@ -8,7 +8,7 @@
 
 ## General info
 
-Playlist allows to store and listen to songs. They can by uploaded through audio files (e.g. <i>\*.mp3</i>) or video files (e.g. <i>\*.mp4</i>). There is an option to upload song via Youtube URL.
+Playlist allows to store and listen to songs. They can be uploaded through audio files (e.g. <i>\*.mp3</i>) or video files (e.g. <i>\*.mp4</i>). There is also an option to upload song via Youtube URL.
 
 ## Technologies
 

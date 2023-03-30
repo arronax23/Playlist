@@ -61,7 +61,6 @@ namespace Playlist.Controllers
         [HttpGet("api/GetSongsTotalCount")]
         public int GetSongsTotalCount()
         {
-
             var audioSongs = _mongoDBService.ReadCollection<AudioSong>(_audioSongcollection);
             var videoSongs = _mongoDBService.ReadCollection<VideoSong>(_videoSongcollection);
 
