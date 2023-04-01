@@ -18,7 +18,9 @@ Playlist allows to store and listen to songs. They can be uploaded through audio
 
 ## Screenshots
 
-![Main Page Screenshot](./img-README/Playlist.png)
+![Home 8 Cards Screenshot](./img-README/Home8Cards.png)
+![Home 4 Cards Screenshot](./img-README/Home4Cards.png)
+![Card Hover Screenshot](./img-README/CardHover.png)
 ![Add Song Page Screenshot](./img-README/AddSong.png)
 ![Invalid Youtube URL Screenshot](./img-README/InvalidYoutubeURL.png)
 ![VideoCard Screenshot](./img-README/VideoCard.png)
