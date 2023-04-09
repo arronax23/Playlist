@@ -6,9 +6,9 @@ namespace Playlist.Data;
 
 public class MongoDBService
 {
-    private static string? _connectionString;
+    private readonly string _connectionString;
     private readonly MongoClient _client;
-    private string _database;
+    private readonly string _database;
 
     public MongoDBService(IConfiguration configuration)
     {
