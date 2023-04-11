@@ -9,7 +9,7 @@
 
 ## Website URL
 
-https://playlist.arronax23.hostingasp.pl/
+https://playlist.arronax23.hostingasp.pl
 
 ## General info
 
