@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Playlist.Data;
 using Playlist.Models;
+using Playlist.ViewModels;
 using System.Numerics;
 
 namespace Playlist.Controllers;
@@ -18,15 +19,25 @@ public class VideoSongController : ControllerBase
     }
 
     [HttpGet("api/GetAllVideoSongs")]
-    public IEnumerable<VideoSong> GetAllSongs()
+    public IActionResult GetAllSongs()
     {
-        return _mongoDBService.ReadCollection<VideoSong>(_collection);
+        var songs = _mongoDBService.ReadCollection<VideoSong>(_collection);
+
+        if (songs== null)
+            return NotFound();
+
+        return Ok(songs);
     }
 
     [HttpGet("api/GetOneVideoSong/{id}")]
-    public VideoSong GetOneSong(string? id)
+    public IActionResult GetOneSong(string? id)
     {
-        return _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
+        var song = _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
+
+        if (song == null)
+            return NotFound();
+
+        return Ok(song);
     }
 
     [HttpPost("api/AddVideoSong")]
@@ -39,12 +50,16 @@ public class VideoSongController : ControllerBase
     }
 
     [HttpPost("api/UploadVideoFile")]
-    public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] string imgPath, [FromForm] bool customImg, [FromForm] IFormFile video, [FromForm] string videoPath)
+    public IActionResult UploadFile(
+        [FromForm] IFormFile img,
+        [FromForm] string imgPath,
+        [FromForm] bool customImg,
+        [FromForm] IFormFile video,
+        [FromForm] string videoPath
+    )
     {
         if (!ModelState.IsValid)
-        {
             return BadRequest(ModelState);
-        }
 
         if (customImg)
         {
@@ -89,7 +104,6 @@ public class VideoSongController : ControllerBase
         {
             return Ok("Files were not deleted");
         }
-
 
         return Ok();
     }
