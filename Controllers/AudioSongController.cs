@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver.Core.Configuration;
 using Playlist.Data;
 using Playlist.Models;
+using Playlist.ViewModels;
 using System.Data;
 using System.Numerics;
 using System.Reflection.PortableExecutable;
@@ -24,15 +25,25 @@ public class AudioSongController : ControllerBase
     }
 
     [HttpGet("api/GetAllSongs")]
-    public IEnumerable<AudioSong> GetAllSongs()
+    public IActionResult GetAllSongs()
     {
-        return _mongoDBService.ReadCollection<AudioSong>(_collection);
+        var songs = _mongoDBService.ReadCollection<AudioSong>(_collection);
+      
+        if (songs == null)
+            return NotFound();
+
+        return Ok(songs);
     }
 
     [HttpGet("api/GetOneSong/{id}")]
-    public AudioSong GetOneSong(string? id)
+    public IActionResult GetOneSong(string? id)
     {
-        return _mongoDBService.GetOneDocument<AudioSong>(_collection, id);
+        var song = _mongoDBService.GetOneDocument<AudioSong>(_collection, id);
+
+        if (song == null)
+            return NotFound();
+
+        return Ok(song);
     }
 
     [HttpPost("api/AddSong")]
@@ -45,7 +56,11 @@ public class AudioSongController : ControllerBase
     }
 
     [HttpPost("api/UploadFile")]
-    public IActionResult UploadFile([FromForm] IFormFile img, [FromForm] IFormFile audio, [FromForm] string imgPath, [FromForm] string audioPath)
+    public IActionResult UploadFile(
+        [FromForm] IFormFile img,
+        [FromForm] IFormFile audio,
+        [FromForm] string imgPath,
+        [FromForm] string audioPath)
     {
         string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"wwwroot\\img", imgPath);
         string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", audioPath);
@@ -72,7 +87,6 @@ public class AudioSongController : ControllerBase
         string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
         string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioPath);
 
-
         try
         {
             System.IO.File.Delete(imgAbsolutePath);
@@ -83,7 +97,6 @@ public class AudioSongController : ControllerBase
 
             return Ok("Files were not deleted");
         }
-
 
         return Ok();
     }
