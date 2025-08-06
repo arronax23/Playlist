@@ -1,27 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Playlist.Data;
 using Playlist.Models;
-using Playlist.ViewModels;
-using System.Numerics;
 
 namespace Playlist.Controllers;
 
 [ApiController]
 public class VideoSongController : ControllerBase
 {
-    private readonly MongoDBService _mongoDBService;
-    private readonly string _collection = "videoSong";
+    private readonly MongoDatabase _mongoDatabase;
 
-    public VideoSongController(MongoDBService mongoDBService)
+    public VideoSongController(MongoDatabase mongoDatabase)
     {
-        _mongoDBService = mongoDBService;
+        _mongoDatabase = mongoDatabase;
     }
 
     [HttpGet("api/GetAllVideoSongs")]
     public IActionResult GetAllSongs()
     {
-        var songs = _mongoDBService.ReadCollection<VideoSong>(_collection);
+        var songs = _mongoDatabase.ReadCollection<VideoSong>(VideoSong.MongoCollection);
 
         if (songs== null)
             return NotFound();
@@ -32,7 +28,7 @@ public class VideoSongController : ControllerBase
     [HttpGet("api/GetOneVideoSong/{id}")]
     public IActionResult GetOneSong(string? id)
     {
-        var song = _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
+        var song = _mongoDatabase.GetOneDocument<VideoSong>(VideoSong.MongoCollection, id);
 
         if (song == null)
             return NotFound();
@@ -44,7 +40,7 @@ public class VideoSongController : ControllerBase
     public IActionResult AddSong(VideoSong song)
     {
         song.CreatedDate = DateTime.Now;
-        _mongoDBService.Insert(_collection, song);
+        _mongoDatabase.Insert(VideoSong.MongoCollection, song);
 
         return Created($"api/GetOneVideoSong/{song.Id}", song);
     }
@@ -84,9 +80,9 @@ public class VideoSongController : ControllerBase
     [HttpDelete("api/DeleteVideoSong/{id}")]
     public IActionResult DeleteSong(string? id)
     {
-        var song = _mongoDBService.GetOneDocument<VideoSong>(_collection, id);
+        var song = _mongoDatabase.GetOneDocument<VideoSong>(VideoSong.MongoCollection, id);
         
-        _mongoDBService.DeleteDocument<AudioSong>(_collection, id);
+        _mongoDatabase.DeleteDocument<AudioSong>(VideoSong.MongoCollection, id);
 
         try
         {

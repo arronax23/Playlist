@@ -4,7 +4,7 @@ using Playlist.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<MongoDBService>();
+builder.Services.AddSingleton<MongoDatabase>();
 
 var app = builder.Build();
 

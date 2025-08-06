@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-
-namespace Playlist.Models.Interfaces;
+﻿namespace Playlist.Models.Interfaces;
 
 public interface IDocument
 {

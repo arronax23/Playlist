@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Playlist.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Playlist.ViewModels;
-using System;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
-using static System.Net.WebRequestMethods;
 
 namespace Playlist.Controllers;
 

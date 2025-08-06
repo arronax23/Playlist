@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Playlist.Data;
 using Playlist.Models;
 using Playlist.ViewModels;
@@ -9,20 +8,20 @@ namespace Playlist.Controllers
     [ApiController]
     public class SongController : ControllerBase
     {
-        private readonly MongoDBService _mongoDBService;
+        private readonly MongoDatabase _mongoDatabase;
         private readonly string _audioSongcollection = "song";
         private readonly string _videoSongcollection = "videoSong";
 
-        public SongController(MongoDBService mongoDBService)
+        public SongController(MongoDatabase mongoDatabase)
         {
-            _mongoDBService = mongoDBService;
+            _mongoDatabase = mongoDatabase;
         }
 
         [HttpGet("api/GetAudioAndVideoSongsForPage/{currentPage}/{songsPerPage}")]
         public IEnumerable<SongVM> GetAudioAndVideoSongsPerPage(int currentPage, int songsPerPage)
         {
-            var audioSongs =  _mongoDBService.ReadCollection<AudioSong>(_audioSongcollection);
-            var videoSongs =  _mongoDBService.ReadCollection<VideoSong>(_videoSongcollection);
+            var audioSongs =  _mongoDatabase.ReadCollection<AudioSong>(_audioSongcollection);
+            var videoSongs =  _mongoDatabase.ReadCollection<VideoSong>(_videoSongcollection);
 
             List<SongVM> songs = new List<SongVM>();
             songs.AddRange(audioSongs.Select(audioSong => new SongVM()
@@ -61,8 +60,8 @@ namespace Playlist.Controllers
         [HttpGet("api/GetSongsTotalCount")]
         public int GetSongsTotalCount()
         {
-            var audioSongs = _mongoDBService.ReadCollection<AudioSong>(_audioSongcollection);
-            var videoSongs = _mongoDBService.ReadCollection<VideoSong>(_videoSongcollection);
+            var audioSongs = _mongoDatabase.ReadCollection<AudioSong>(_audioSongcollection);
+            var videoSongs = _mongoDatabase.ReadCollection<VideoSong>(_videoSongcollection);
 
             int totalCount = audioSongs.Count() + videoSongs.Count();
 

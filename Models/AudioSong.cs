@@ -20,4 +20,7 @@ public class AudioSong : IDocument
     public string AudioPath { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
 
+    [BsonIgnore]
+    public static string MongoCollection => "audioSongs";
+
 }

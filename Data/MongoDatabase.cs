@@ -1,16 +1,15 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Playlist.Models.Interfaces;
 
 namespace Playlist.Data;
 
-public class MongoDBService
+public class MongoDatabase
 {
     private readonly string _connectionString;
     private readonly MongoClient _client;
     private readonly string _database;
 
-    public MongoDBService(IConfiguration configuration)
+    public MongoDatabase(IConfiguration configuration)
     {
         _connectionString = configuration["ConnectionStrings:MongoDbConnection"];
         _database = configuration["ConnectionStrings:Database"];

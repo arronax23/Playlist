@@ -20,4 +20,7 @@ public class VideoSong : IDocument
     public string ImgPath { get; set; } = null!;
     public string VideoPath { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
+
+    [BsonIgnore]
+    public static string MongoCollection => "videoSongs";
 }
