@@ -9,9 +9,7 @@ namespace Playlist.Controllers
     public class SongController : ControllerBase
     {
         private readonly MongoDatabase _mongoDatabase;
-        private readonly string _audioSongcollection = "song";
-        private readonly string _videoSongcollection = "videoSong";
-
+        
         public SongController(MongoDatabase mongoDatabase)
         {
             _mongoDatabase = mongoDatabase;
@@ -20,8 +18,8 @@ namespace Playlist.Controllers
         [HttpGet("api/GetAudioAndVideoSongsForPage/{currentPage}/{songsPerPage}")]
         public IEnumerable<SongVM> GetAudioAndVideoSongsPerPage(int currentPage, int songsPerPage)
         {
-            var audioSongs =  _mongoDatabase.ReadCollection<AudioSong>(_audioSongcollection);
-            var videoSongs =  _mongoDatabase.ReadCollection<VideoSong>(_videoSongcollection);
+            var audioSongs =  _mongoDatabase.ReadCollection<AudioSong>(AudioSong.MongoCollection);
+            var videoSongs =  _mongoDatabase.ReadCollection<VideoSong>(VideoSong.MongoCollection);
 
             List<SongVM> songs = new List<SongVM>();
             songs.AddRange(audioSongs.Select(audioSong => new SongVM()
@@ -60,8 +58,8 @@ namespace Playlist.Controllers
         [HttpGet("api/GetSongsTotalCount")]
         public int GetSongsTotalCount()
         {
-            var audioSongs = _mongoDatabase.ReadCollection<AudioSong>(_audioSongcollection);
-            var videoSongs = _mongoDatabase.ReadCollection<VideoSong>(_videoSongcollection);
+            var audioSongs = _mongoDatabase.ReadCollection<AudioSong>(AudioSong.MongoCollection);
+            var videoSongs = _mongoDatabase.ReadCollection<VideoSong>(VideoSong.MongoCollection);
 
             int totalCount = audioSongs.Count() + videoSongs.Count();
 

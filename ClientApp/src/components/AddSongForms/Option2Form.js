@@ -154,7 +154,6 @@ function Option2Form() {
                 <input type="text" name="title" id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
                 <label htmlFor="custom-img">Custom Image</label>
                 <input type="checkbox" name="custom-img" id="custom-img" value={customImg} onChange={(e) => setCustomImg(previous => !previous) } />
-                {/* <input type="checkbox" name="custom-img" id="custom-img"  onChange={(e) => console.log(e.target) } /> */}
 
                 { customImg ?
                 (

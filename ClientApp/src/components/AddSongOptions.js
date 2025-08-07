@@ -6,7 +6,6 @@ function AddSongOptions({ setPickedOption }) {
     const option3Description = useRef();
     const optionDescription = useRef();
 
-
     const onOptionClick = (e) => {
         document.querySelectorAll(".option").forEach(option => option.classList.remove("active"));
         e.target.classList.add("active");
