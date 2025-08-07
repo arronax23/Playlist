@@ -1,4 +1,4 @@
-import React, { useState, useRef}  from 'react'
+import { useState, useRef}  from 'react'
 import { useHistory } from 'react-router'
 import {v4 as uuidv4} from 'uuid';
 import { ReactComponent as Spinner} from './spinner.svg'
@@ -7,8 +7,8 @@ function Option3Form() {
     const downloadSongInfoOptions = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-            'X-RapidAPI-Host': 'youtube-video-download-info.p.rapidapi.com'
+            'x-rapidapi-key': process.env.REACT_APP_API_KEY,
+            'x-rapidapi-host': 'yt-api.p.rapidapi.com'
         }
     };
 
@@ -65,10 +65,10 @@ function Option3Form() {
 
     const handleDownloadSongInfo = (e) => {
         fileUploadContainer.current.classList.add('active');
-        fetchSongInfo(true, false);
+        fetchSongInfo();
     }
 
-    const fetchSongInfo = async (setAuthorAndTitle, setImg) =>{
+    const fetchSongInfo = async (setAuthorAndTitle, setImg) => {
         let linkArray = videoLink.split('v=');
         let ytID = linkArray[linkArray.length - 1];
         if (ytID.includes('&')){
@@ -76,19 +76,20 @@ function Option3Form() {
         }
         console.log(ytID)
 
-        let response = await fetch(`https://youtube-video-download-info.p.rapidapi.com/dl?id=${ytID}`, downloadSongInfoOptions);
-        let youtubeInfo = await response.json();
+        let response = await fetch(`https://yt-api.p.rapidapi.com/video/info?id=${ytID}`, downloadSongInfoOptions);
         
-        if (youtubeInfo.status == "ok"){
-            console.log(youtubeInfo);
-            let authorTitleInfoArray = youtubeInfo.title.split("-");
-            if (setAuthorAndTitle){
+        if (response.ok){
+            let youtubeInfo = await response.json();
+
+            if (youtubeInfo.title.includes('-')) {
+                let authorTitleInfoArray = youtubeInfo.title.split("-");
                 setAuthor(authorTitleInfoArray[0]);
                 setTitle(authorTitleInfoArray[1]);
             }
-            else if (setImg){
-                return youtubeInfo.thumb;
+            else {
+                  setTitle(youtubeInfo.title);
             }
+        
             fileUploadContainer.current.classList.remove('active');
         }
         else {
