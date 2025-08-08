@@ -65,21 +65,16 @@ function Option3Form() {
 
     const handleDownloadSongInfo = (e) => {
         fileUploadContainer.current.classList.add('active');
-        fetchSongInfo();
+        fetchSongInfo(true, false);
     }
 
-    const fetchSongInfo = async (setAuthorAndTitle, setImg) => {
-        let linkArray = videoLink.split('v=');
-        let ytID = linkArray[linkArray.length - 1];
-        if (ytID.includes('&')){
-            ytID = ytID.split('&')[0];
-        }
-        console.log(ytID)
-
+    const fetchSongInfo = async (setAuthorAndTitle, returnImgLink) => {
+        const ytID = extractYtID();
         let response = await fetch(`https://yt-api.p.rapidapi.com/video/info?id=${ytID}`, downloadSongInfoOptions);
-        
+
         if (response.ok){
             let youtubeInfo = await response.json();
+            console.log(youtubeInfo)
 
             if (youtubeInfo.title.includes('-')) {
                 let authorTitleInfoArray = youtubeInfo.title.split("-");
@@ -98,11 +93,32 @@ function Option3Form() {
         }
     }
 
+    const extractYtID = () => {
+        let linkArray = videoLink.split('v=');
+        let ytID = linkArray[linkArray.length - 1];
+        if (ytID.includes('&')){
+            ytID = ytID.split('&')[0];
+        }
+
+        return ytID;
+    }
+    const fetchSongThumbnailImgLink = async () => {
+        const ytID = extractYtID();
+        let response = await fetch(`https://yt-api.p.rapidapi.com/video/info?id=${ytID}`, downloadSongInfoOptions);
+
+        if (response.ok){
+            const youtubeInfo = await response.json();
+            const url = youtubeInfo.thumbnail[youtubeInfo.thumbnail.length - 1].url
+            return url;
+        }
+
+    }
+
     const onSubmit = async (e) => {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
     
-        const imgLink = await fetchSongInfo(false, true);
+        const imgLink = await fetchSongThumbnailImgLink()
     
         const videoUUID = uuidv4();
         const videoPath = `${videoUUID}.mp4`;
