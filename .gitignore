@@ -237,5 +237,4 @@ wwwroot/
 .env.development
 .env.development.local
 
-appsettings.json
-appsettings.Development.json
+/appsettings.Production.json
