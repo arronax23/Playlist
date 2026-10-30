@@ -52,8 +52,8 @@ public class AudioSongController : ControllerBase
         [FromForm] string imgPath,
         [FromForm] string audioPath)
     {
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory,"wwwroot\\img", imgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", audioPath);
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", imgPath);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "audio", audioPath);
 
         using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
         {

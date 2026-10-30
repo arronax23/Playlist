@@ -59,7 +59,7 @@ public class VideoSongController : ControllerBase
 
         if (customImg)
         {
-            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", imgPath);
+            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", imgPath);
 
             using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
             {
@@ -68,7 +68,7 @@ public class VideoSongController : ControllerBase
 
         }
 
-        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\video", videoPath);
+        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video", videoPath);
 
         using (FileStream fileStream = new FileStream(videoAbsolutePath, FileMode.Create))
         {
@@ -88,11 +88,11 @@ public class VideoSongController : ControllerBase
         {
             if (song.CustomImg)
             {
-                string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
+                string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", song.ImgPath);
                 System.IO.File.Delete(imgAbsolutePath);
             }
 
-            string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\video", song.VideoPath);
+            string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video", song.VideoPath);
             System.IO.File.Delete(videoAbsolutePath);
 
         }
