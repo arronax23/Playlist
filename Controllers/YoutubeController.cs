@@ -28,7 +28,7 @@ public class YoutubeController : ControllerBase
     }
 
     [NonAction]
-    public async Task<DownloadResult> DownloadVideoAndAudioSeparately(string videoLink, string videoPath)
+    private async Task<DownloadResult> DownloadVideoAndAudioSeparately(string videoLink, string videoPath)
     {
         var youtube = new YoutubeClient();
 
@@ -53,7 +53,7 @@ public class YoutubeController : ControllerBase
     }
 
     [NonAction]
-    public async Task<MuxResult> MuxVideoAndAudioFiles(string videoPath, string tmpAudioFile, string tmpVideoFile)
+    private async Task<MuxResult> MuxVideoAndAudioFiles(string videoPath, string tmpAudioFile, string tmpVideoFile)
     {
         var outputPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video");
         Directory.CreateDirectory(outputPath);
@@ -100,14 +100,14 @@ public class YoutubeController : ControllerBase
     }
 
 
-    public class DownloadResult
+    private class DownloadResult
     {
         public bool IsSuccess { get; set; }
         public string? TmpVideoFile { get; set; }
         public string? TmpAudioFile { get; set; }
     }
 
-    public class MuxResult
+    private class MuxResult
     {
         public bool IsSuccess { get; set; }
         public string? ErrorMessage { get; set; }
