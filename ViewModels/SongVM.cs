@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Playlist.ViewModels;
 
-public enum SongType {Audio , Video };
+public enum SongType { Audio , Video };
 public class SongVM
 {
     [BsonId]
@@ -13,8 +13,8 @@ public class SongVM
     public string Author { get; set; } = null!;
     public string Title { get; set; } = null!;
     public bool CustomImg { get; set; }
-    public string ImgPath { get; set; } = null!;
-    public string AudioPath { get; set; } = null!;
-    public string VideoPath { get; set; } = null!;
+    public string ImgFileName { get; set; } = null!;
+    public string AudioFileName { get; set; } = null!;
+    public string VideoFileName { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
 }

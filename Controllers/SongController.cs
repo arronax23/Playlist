@@ -6,17 +6,15 @@ using Playlist.ViewModels;
 namespace Playlist.Controllers
 {
     [ApiController]
+    [Route("api/songs")]
     public class SongController : ControllerBase
     {
         private readonly MongoDatabase _mongoDatabase;
         
-        public SongController(MongoDatabase mongoDatabase)
-        {
-            _mongoDatabase = mongoDatabase;
-        }
+        public SongController(MongoDatabase mongoDatabase) => _mongoDatabase = mongoDatabase;
 
-        [HttpGet("api/GetAudioAndVideoSongsForPage/{currentPage}/{songsPerPage}")]
-        public IEnumerable<SongVM> GetAudioAndVideoSongsPerPage(int currentPage, int songsPerPage)
+        [HttpGet]
+        public IEnumerable<SongVM> GetAudioAndVideoSongsPerPage(int pageNumber = 1, int pageSize = 10)
         {
             var audioSongs =  _mongoDatabase.ReadCollection<AudioSong>(AudioSong.MongoCollection);
             var videoSongs =  _mongoDatabase.ReadCollection<VideoSong>(VideoSong.MongoCollection);
@@ -24,13 +22,13 @@ namespace Playlist.Controllers
             List<SongVM> songs = new List<SongVM>();
             songs.AddRange(audioSongs.Select(audioSong => new SongVM()
             {
-                Id= audioSong.Id,
+                Id = audioSong.Id,
                 Type = SongType.Audio,
-                Author= audioSong.Author,
-                Title= audioSong.Title,
-                ImgPath= audioSong.ImgPath,
-                AudioPath= audioSong.AudioPath,
-                CreatedDate= audioSong.CreatedDate
+                Author = audioSong.Author,
+                Title = audioSong.Title,
+                ImgFileName = audioSong.ImgFileName,
+                AudioFileName = audioSong.AudioFileName,
+                CreatedDate = audioSong.CreatedDate
             }));
 
             songs.AddRange(videoSongs.Select(videoSong => new SongVM()
@@ -40,22 +38,21 @@ namespace Playlist.Controllers
                 Author = videoSong.Author,
                 Title = videoSong.Title,
                 CustomImg = videoSong.CustomImg,
-                ImgPath = videoSong.ImgPath,
-                VideoPath = videoSong.VideoPath,
+                ImgFileName = videoSong.ImgFileName,
+                VideoFileName = videoSong.VideoFileName,
                 CreatedDate = videoSong.CreatedDate
             }));
 
             songs = songs
                 .OrderBy(s => s.CreatedDate)
-                .Skip((currentPage - 1) * songsPerPage)
-                .Take(songsPerPage)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
             return songs;
-
         }
 
-        [HttpGet("api/GetSongsTotalCount")]
+        [HttpGet("count")]
         public int GetSongsTotalCount()
         {
             var audioSongs = _mongoDatabase.ReadCollection<AudioSong>(AudioSong.MongoCollection);

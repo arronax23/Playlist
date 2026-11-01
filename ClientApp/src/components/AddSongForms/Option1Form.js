@@ -1,6 +1,5 @@
 import React, { useState, useRef}  from 'react'
 import { useHistory } from 'react-router'
-import {v4 as uuidv4} from 'uuid';
 import { ReactComponent as Spinner} from './spinner.svg'
 
 function Option1Form() {
@@ -14,19 +13,9 @@ function Option1Form() {
     const [author, setAuthor] = useState('');
     const [title, setTitle] = useState('');
     const [img, setImg] = useState();
-    const [imgPath, setimgPath] = useState('');
     const [audio, setAudio] = useState();
-    const [audioPath, setAudioPath] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
     const [errors, setErrors] = useState([]);
-
-    const isResponseProblemJson = (response) => {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/problem+json") !== -1){
-            return true;
-        }
-        return false;
-    }
 
     const activatePopupContent = (className) => {
         document.querySelectorAll('.file-upload-popup').forEach(content => {
@@ -57,41 +46,20 @@ function Option1Form() {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
       
-        const song = { author, title, imgPath, audioPath};
-        let formData = new FormData();
-        formData.append('img', img);
-        formData.append('imgPath', imgPath);
-        formData.append('audio', audio);
-        formData.append('audioPath', audioPath);
-        console.log(song);
+        const formData = new FormData();
+        formData.append('Author', author);
+        formData.append('Title', title);
+        formData.append('Img', img);
+        formData.append('Audio', audio);
+
       
-        const addSongResponse = await fetch('api/AddSong', {
+        const addSongResponse = await fetch('api/audiosongs', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(song),
+            body: formData,
         });
     
-        if (addSongResponse.ok) {
-            console.log(formData);
-            const uploadFileResponse = await fetch('api/UploadFile', {
-                method: 'POST',
-                body: formData,
-            });
-        
-            if (uploadFileResponse.ok) {
-                activatePopupContent('uploaded');
-            }
-            console.log(uploadFileResponse);
-        
-            if (isResponseProblemJson(uploadFileResponse)) {
-                const uploadFileResponseData = await uploadFileResponse.json();
-                if (uploadFileResponseData.errors != null) {
-                setErrors([...errors, ...Object.values(uploadFileResponseData.errors)]);
-                activatePopupContent('errors');
-                }
-            }
+        if (addSongResponse.ok){
+            activatePopupContent('uploaded');
         }
     
         const addSongResponseData = await addSongResponse.json();
@@ -106,27 +74,19 @@ function Option1Form() {
 
     const handleImgChange = (e) => {
         imgSelected.current.innerHTML = e.target.files[0].name;
-        let imgUUID = uuidv4();
-        let imgNameArray = e.target.files[0].name.split('.');
-        let extension = imgNameArray[imgNameArray.length - 1];
-        let imgName = `${imgUUID}.${extension}`;
 
-        console.log(e.target.files[0]);
+        console.log(e.target.files[0].name);
+
         setImg(e.target.files[0]);
-        setimgPath(imgName);
     }
 
     const handleAudioChange = (e) => {
         audioSelected.current.innerHTML = e.target.files[0].name;
-        let audioUUID = uuidv4();
-        let audioNameArray = e.target.files[0].name.split('.');
-        let extension = audioNameArray[audioNameArray.length - 1];
-        let audioName = `${audioUUID}.${extension}`;
 
-        console.log(e.target.files[0]);
+        console.log(e.target.files[0].name);
         setAudio(e.target.files[0]);
-        setAudioPath(audioName);
     }
+
     return (
         <div className="form-container">
             <div className="file-upload-container" ref={fileUploadContainer}>

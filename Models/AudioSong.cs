@@ -16,8 +16,8 @@ public class AudioSong : IDocument
     [Required]
     [StringLength(30)]
     public string Title { get; set; } = null!;
-    public string ImgPath { get; set; } = null!;
-    public string AudioPath { get; set; } = null!;
+    public string ImgFileName { get; set; } = null!;
+    public string AudioFileName { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
 
     [BsonIgnore]

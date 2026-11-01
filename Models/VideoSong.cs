@@ -17,8 +17,8 @@ public class VideoSong : IDocument
     [StringLength(30)]
     public string Title { get; set; } = null!;
     public bool CustomImg { get; set; }
-    public string ImgPath { get; set; } = null!;
-    public string VideoPath { get; set; } = null!;
+    public string ImgFileName { get; set; } = null!;
+    public string VideoFileName { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
 
     [BsonIgnore]

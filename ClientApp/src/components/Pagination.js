@@ -2,7 +2,7 @@ import useFetchGet from './../customHooks/useFetchGet'
 import React, { useEffect } from 'react'
 
 function Pagination({currentPage, setCurrentPage, songsPerPage}) {
-    const {data: totalCount, isPendingVideo, errorVideo, httpResposneVideo} = useFetchGet(`api/GetSongsTotalCount`);
+    const {data: totalCount, isPendingVideo, errorVideo, httpResposneVideo} = useFetchGet(`api/songs/count`);
     let pages = [];
 
     for (let i = 1; i <= Math.ceil(totalCount / songsPerPage); i++) {

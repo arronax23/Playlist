@@ -1,11 +1,10 @@
 import React, { useRef, useState } from 'react'
 import useFetchGet from './../customHooks/useFetchGet'
-import { ReactComponent as AudioAnimation} from './audioAnimation.svg'
 import { useParams } from 'react-router-dom'
 
 function VideoCard() {
     const { id } = useParams();
-    const {data : videoSong, isPending, error, httpResposne} = useFetchGet(`/api/GetOneVideoSong/${id}`);
+    const { data : videoSong } = useFetchGet(`/api/videosongs/${id}`);
     
     const [isStart, setIsStart] = useState(true);
     const [timeStamp, setTimeStamp] = useState();
@@ -162,14 +161,14 @@ function VideoCard() {
                     videoSong.customImg == true ? 
                     (
                        <div className="audiocard-image" ref={imgDiv}>
-                            <img src={`/img/${videoSong.imgPath}`} />
+                            <img alt={videoSong.title} src={`/img/${videoSong.imgFileName}`} />
                         </div>
                     )
                     :
                     videoSong.customImg == false ? 
                     (
                         <div className="videocard-video">
-                            <video src={`/video/${videoSong.videoPath}`} ref={video} onTimeUpdate={onTimeUpdate}></video>
+                            <video src={`/video/${videoSong.videoFileName}`} ref={video} onTimeUpdate={onTimeUpdate}></video>
                         </div>
                     )
                     : null
@@ -178,7 +177,7 @@ function VideoCard() {
                      videoSong.customImg == true ? 
                      (
                         <div className="videocard-video hide" ref={videoDiv}>
-                        <video src={`/video/${videoSong.videoPath}`} ref={video} onTimeUpdate={onTimeUpdate}></video>
+                        <video src={`/video/${videoSong.videoFileName}`} ref={video} onTimeUpdate={onTimeUpdate}></video>
                         </div>
                      )
                      : 

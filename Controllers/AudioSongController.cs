@@ -5,17 +5,15 @@ using Playlist.Models;
 namespace Playlist.Controllers;
 
 [ApiController]
+[Route("api/audiosongs")]
 public class AudioSongController : ControllerBase
 {
     private readonly MongoDatabase _mongoDatabase;
 
-    public AudioSongController(MongoDatabase mongoDatabase)
-    {
-        _mongoDatabase = mongoDatabase;
-    }
+    public AudioSongController(MongoDatabase mongoDatabase) => _mongoDatabase = mongoDatabase;
 
-    [HttpGet("api/GetAllSongs")]
-    public IActionResult GetAllSongs()
+    [HttpGet]
+    public IActionResult Get()
     {
         var songs = _mongoDatabase.ReadCollection<AudioSong>(AudioSong.MongoCollection);
       
@@ -25,8 +23,8 @@ public class AudioSongController : ControllerBase
         return Ok(songs);
     }
 
-    [HttpGet("api/GetOneSong/{id}")]
-    public IActionResult GetOneSong(string? id)
+    [HttpGet("{id}")]
+    public IActionResult Get(string id)
     {
         var song = _mongoDatabase.GetOneDocument<AudioSong>(AudioSong.MongoCollection, id);
 
@@ -36,47 +34,38 @@ public class AudioSongController : ControllerBase
         return Ok(song);
     }
 
-    [HttpPost("api/AddSong")]
-    public IActionResult AddSong(AudioSong song)
+    [HttpPost]
+    public IActionResult Create(
+        [FromForm] string Author,
+        [FromForm] string Title,
+        [FromForm] IFormFile Img,
+        [FromForm] IFormFile Audio)
     {
-        song.CreatedDate = DateTime.Now;
+        var filesNames = UploadFiles(Img, Audio);
+
+        var song = new AudioSong
+        {
+            Author = Author,
+            Title = Title,
+            ImgFileName = filesNames.ImgFileName,
+            AudioFileName = filesNames.AudioFileName,
+            CreatedDate = DateTime.Now
+        };
+
         _mongoDatabase.Insert(AudioSong.MongoCollection, song);
 
         return Created($"api/GetOneSong/{song.Id}", song);
     }
 
-    [HttpPost("api/UploadFile")]
-    public IActionResult UploadFile(
-        [FromForm] IFormFile img,
-        [FromForm] IFormFile audio,
-        [FromForm] string imgPath,
-        [FromForm] string audioPath)
-    {
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", imgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "audio", audioPath);
-
-        using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
-        {
-            img.CopyTo(fileStream);
-        }
-
-        using (FileStream fileStream = new FileStream(audioAbsolutePath, FileMode.Create))
-        {
-            audio.CopyTo(fileStream);
-        }
-
-        return Ok();
-    }
-
-    [HttpDelete("api/DeleteSong/{id}")]
-    public IActionResult DeleteSong(string? id)
+    [HttpDelete("{id}")]
+    public IActionResult Delete(string? id)
     {
         var song = _mongoDatabase.GetOneDocument<AudioSong>(AudioSong.MongoCollection, id);
             
         _mongoDatabase.DeleteDocument<AudioSong>(AudioSong.MongoCollection, id);
 
-        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgPath);
-        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioPath);
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\img", song.ImgFileName);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot\\audio", song.AudioFileName);
 
         try
         {
@@ -89,5 +78,33 @@ public class AudioSongController : ControllerBase
         }
 
         return Ok();
+    }
+
+    [NonAction]
+    private FilesNames UploadFiles(IFormFile img, IFormFile audio)
+    {
+        var imgFileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+        var audioFileName = Guid.NewGuid().ToString() + Path.GetExtension(audio.FileName);
+
+        string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", imgFileName);
+        string audioAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "audio", audioFileName);
+
+        using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
+            img.CopyTo(fileStream);
+
+        using (FileStream fileStream = new FileStream(audioAbsolutePath, FileMode.Create))
+            audio.CopyTo(fileStream);
+
+        return new FilesNames()
+        {
+            ImgFileName = imgFileName,
+            AudioFileName = audioFileName
+        };
+    }
+
+    private class FilesNames
+    {
+        public string ImgFileName { get; set; } = null!;
+        public string AudioFileName { get; set; } = null!;
     }
 }

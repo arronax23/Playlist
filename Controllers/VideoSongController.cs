@@ -5,17 +5,15 @@ using Playlist.Models;
 namespace Playlist.Controllers;
 
 [ApiController]
+[Route("api/videosongs")]
 public class VideoSongController : ControllerBase
 {
     private readonly MongoDatabase _mongoDatabase;
 
-    public VideoSongController(MongoDatabase mongoDatabase)
-    {
-        _mongoDatabase = mongoDatabase;
-    }
+    public VideoSongController(MongoDatabase mongoDatabase) => _mongoDatabase = mongoDatabase;
 
-    [HttpGet("api/GetAllVideoSongs")]
-    public IActionResult GetAllSongs()
+    [HttpGet]
+    public IActionResult Get()
     {
         var songs = _mongoDatabase.ReadCollection<VideoSong>(VideoSong.MongoCollection);
 
@@ -25,8 +23,8 @@ public class VideoSongController : ControllerBase
         return Ok(songs);
     }
 
-    [HttpGet("api/GetOneVideoSong/{id}")]
-    public IActionResult GetOneSong(string? id)
+    [HttpGet("{id}")]
+    public IActionResult Get(string id)
     {
         var song = _mongoDatabase.GetOneDocument<VideoSong>(VideoSong.MongoCollection, id);
 
@@ -36,63 +34,48 @@ public class VideoSongController : ControllerBase
         return Ok(song);
     }
 
-    [HttpPost("api/AddVideoSong")]
-    public IActionResult AddSong(VideoSong song)
+    [HttpPost]
+    public IActionResult Create(
+        [FromForm] string Author,
+        [FromForm] string Title,
+        [FromForm] bool CustomImg,
+        [FromForm] IFormFile Img,
+        [FromForm] IFormFile Video)
     {
-        song.CreatedDate = DateTime.Now;
+        var filesNames = UploadFiles(Img, Video, CustomImg);
+
+        var song = new VideoSong
+        {
+            Author = Author,
+            Title = Title,
+            ImgFileName = filesNames.ImgFileName,
+            CustomImg = CustomImg,
+            VideoFileName = filesNames.VideoFileName,
+            CreatedDate = DateTime.Now
+        };
+
         _mongoDatabase.Insert(VideoSong.MongoCollection, song);
 
-        return Created($"api/GetOneVideoSong/{song.Id}", song);
+         return Created($"api/GetOneVideoSong/{song.Id}", song);
+
     }
 
-    [HttpPost("api/UploadVideoFile")]
-    public IActionResult UploadFile(
-        [FromForm] IFormFile img,
-        [FromForm] string imgPath,
-        [FromForm] bool customImg,
-        [FromForm] IFormFile video,
-        [FromForm] string videoPath
-    )
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        if (customImg)
-        {
-            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", imgPath);
-
-            using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
-            {
-                img.CopyTo(fileStream);
-            }
-
-        }
-
-        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video", videoPath);
-
-        using (FileStream fileStream = new FileStream(videoAbsolutePath, FileMode.Create))
-        {
-            video.CopyTo(fileStream);
-        }
-        return Ok();
-    }
-
-    [HttpDelete("api/DeleteVideoSong/{id}")]
-    public IActionResult DeleteSong(string? id)
+    [HttpDelete("{id}")]
+    public IActionResult Delete(string? id)
     {
         var song = _mongoDatabase.GetOneDocument<VideoSong>(VideoSong.MongoCollection, id);
         
-        _mongoDatabase.DeleteDocument<AudioSong>(VideoSong.MongoCollection, id);
+        _mongoDatabase.DeleteDocument<VideoSong>(VideoSong.MongoCollection, id);
 
         try
         {
             if (song.CustomImg)
             {
-                string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", song.ImgPath);
+                string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", song.ImgFileName);
                 System.IO.File.Delete(imgAbsolutePath);
             }
 
-            string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video", song.VideoPath);
+            string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video", song.VideoFileName);
             System.IO.File.Delete(videoAbsolutePath);
 
         }
@@ -102,5 +85,36 @@ public class VideoSongController : ControllerBase
         }
 
         return Ok();
+    }
+
+    [NonAction]
+    private FilesNames UploadFiles(IFormFile img, IFormFile video, bool customImg)
+    {
+        var imgFileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+        var videoFileName = Guid.NewGuid().ToString() + Path.GetExtension(video.FileName);
+
+        if (customImg)
+        {
+            string imgAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "img", imgFileName);
+
+            using (FileStream fileStream = new FileStream(imgAbsolutePath, FileMode.Create))
+                img.CopyTo(fileStream);
+        }
+
+        string videoAbsolutePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "video", videoFileName);
+
+        using (FileStream fileStream = new FileStream(videoAbsolutePath, FileMode.Create))
+            video.CopyTo(fileStream);
+
+        return new FilesNames()
+        {
+            ImgFileName = imgFileName,
+            VideoFileName = videoFileName
+        };
+    }
+    private class FilesNames
+    {
+        public string ImgFileName { get; set; } = null!;
+        public string VideoFileName { get; set; } = null!;
     }
 }

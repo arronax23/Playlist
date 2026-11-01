@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 
-function Card({id, author, title, audioOrVideo, customImg, imgPath, videoPath }) {
+function Card({id, author, title, audioOrVideo, customImg, imgFileName, videoFileName }) {
     const history = useHistory();
     const card = useRef();
     const cardDelete = useRef();
@@ -39,10 +39,10 @@ function Card({id, author, title, audioOrVideo, customImg, imgPath, videoPath })
 
             let apiURL = "";
             if (audioOrVideo == "audio" ){
-                apiURL = "api/DeleteSong/";
+                apiURL = "api/audiosongs/";
             }
             else if (audioOrVideo == "video"){
-                apiURL = "api/DeleteVideoSong/";
+                apiURL = "api/videosongs/";
             }
 
             fetch(apiURL+id, 
@@ -89,14 +89,14 @@ function Card({id, author, title, audioOrVideo, customImg, imgPath, videoPath })
         { audioOrVideo == "audio" || customImg == true ? 
         (
             <div className="card-image" >
-                <img src={`/img/${imgPath}`} />
+                <img alt={title} src={`/img/${imgFileName}`} />
             </div>
         )
         :
         audioOrVideo == "video" && customImg == false ? 
         (
             <div className="card-image" >
-                <video src={`/video/${videoPath}`}></video>
+                <video src={`/video/${videoFileName}`}></video>
             </div>
         )
         : 

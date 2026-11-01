@@ -1,11 +1,10 @@
 import React, { useRef, useState } from 'react'
 import useFetchGet from './../customHooks/useFetchGet'
-import { ReactComponent as AudioAnimation} from './audioAnimation.svg'
 import { useParams } from 'react-router-dom'
 
 function AudioCard() {
     const { id } = useParams();
-    const {data : song, isPending, error, httpResposne} = useFetchGet(`/api/GetOneSong/${id}`);
+    const { data : song } = useFetchGet(`/api/audiosongs/${id}`);
     
     const audio = useRef();
     const playButton = useRef();
@@ -155,7 +154,7 @@ function AudioCard() {
         <div className="audiocard-container">
             <div className="audiocard">
                 <div className="audiocard-image">
-                    <img src={`/img/${song.imgPath}`} />
+                    <img src={`/img/${song.imgFileName}`} />
                 </div>
                 <div className="audiocard-content">     
                     <div className="audiocard-author">
@@ -177,7 +176,7 @@ function AudioCard() {
                         <i className="fa-solid fa-volume-high" title="Show/Hide Volume Bar" onClick={onDisplayVolumeContainer}></i>
                     </div>
                 </div>
-                <audio src={`/audio/${song.audioPath}`} ref={audio} onTimeUpdate={onTimeUpdate}></audio>
+                <audio src={`/audio/${song.audioFileName}`} ref={audio} onTimeUpdate={onTimeUpdate}></audio>
                 {/* <AudioAnimation ref={wave} /> */}
                 <div className="volume-container hide" ref={volumeContainer}>
                     <div className="volume-bar" onClick={onVolumeBarClick}>

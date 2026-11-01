@@ -16,9 +16,7 @@ function Option2Form() {
     const [title, setTitle] = useState('');
     const [customImg, setCustomImg] = useState(false);
     const [img, setImg] = useState(new File([""], "dummy"));
-    const [imgPath, setimgPath] = useState('dummy');
     const [video, setVideo] = useState();
-    const [videoPath, setVideoPath] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
     const [errors, setErrors] = useState([]);
 
@@ -59,40 +57,20 @@ function Option2Form() {
         e.preventDefault();
         fileUploadContainer.current.classList.add('active');
     
-        const song = {author, title, customImg, imgPath, videoPath};
         let formData = new FormData();
-        formData.append('img',img);
-        formData.append('imgPath',imgPath);
-        formData.append('customImg',customImg);
-        formData.append('video',video);
-        formData.append('videoPath',videoPath);
-        console.log(img);
+        formData.append('author', author);
+        formData.append('title', title);
+        formData.append('img', img);
+        formData.append('customImg', customImg);
+        formData.append('video', video);
     
-        const addSongResponse = await fetch('api/AddVideoSong', {
+        const addSongResponse = await fetch('api/videosongs', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(song)  
+            body: formData  
         });
 
-        if (addSongResponse.ok) {
-            console.log(formData);
-            const uploadFileResponse = await fetch('api/UploadVideoFile', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (uploadFileResponse.ok) {
-                activatePopupContent("uploaded");
-            } 
-            else if (isResponseProblemJson(uploadFileResponse)) {
-                const uploadFileResponseData = await uploadFileResponse.json();
-                if (uploadFileResponseData.errors != null) {
-                    setErrors([...errors, ...Object.values(uploadFileResponseData.errors)]);
-                    activatePopupContent("errors");
-                }
-            }
+        if (addSongResponse.ok){
+            activatePopupContent('uploaded');
         }
 
         const addSongResponseData = await addSongResponse.json();
@@ -107,26 +85,12 @@ function Option2Form() {
 
     const handleImgChange = (e) => {
         imgSelected.current.innerHTML = e.target.files[0].name;
-        let imgUUID = uuidv4();
-        let imgNameArray = e.target.files[0].name.split('.');
-        let extension = imgNameArray[imgNameArray.length - 1];
-        let imgName = `${imgUUID}.${extension}`;
-
-        console.log(e.target.files[0]);
         setImg(e.target.files[0]);
-        setimgPath(imgName);
     }
 
     const handleVideoChange = (e) => {
         videoSelected.current.innerHTML = e.target.files[0].name;
-        let videoUUID = uuidv4();
-        let videoNameArray = e.target.files[0].name.split('.');
-        let extension = videoNameArray[videoNameArray.length - 1];
-        let videoName = `${videoUUID}.${extension}`;
-
-        console.log(e.target.files[0]);
         setVideo(e.target.files[0]);
-        setVideoPath(videoName);
     }
     return (
         <div className="form-container">

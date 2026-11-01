@@ -4,24 +4,20 @@ import Pagination from './Pagination';
 import useFetchGet from './../customHooks/useFetchGet'
 
 function Cards() {
-    // const {data : songs, isPending, error, httpResposne} = useFetchGet("api/GetAllSongs");
-    // const {data : videoSongs, isPendingVideo, errorVideo, httpResposneVideo} = useFetchGet("api/GetAllVideoSongs");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [songsPerPage, setSongsPerPage] = useState(10);
-    const {data: songs, isPendingVideo, errorVideo, httpResposneVideo} = useFetchGet(`api/GetAudioAndVideoSongsForPage/${currentPage}/${songsPerPage}`);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const {data: songs } = useFetchGet(`api/songs?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 
-    const lastSongsIndex = currentPage * songsPerPage;
-    const firstSongsIndex = lastSongsIndex - songsPerPage;
 
     const mofidySongsPerPage = () => {
       if (window.innerWidth > 1400){
-        setSongsPerPage(10);
+        setPageSize(10);
       }
       else if (window.innerWidth > 960){
-        setSongsPerPage(8);
+        setPageSize(8);
       }
       else{
-        setSongsPerPage(4);
+        setPageSize(4);
       }
     }
 
@@ -43,7 +39,7 @@ function Cards() {
             <Card 
             key={song.id} 
             id = {song.id}
-            imgPath={song.imgPath} 
+            imgFileName={song.imgFileName} 
             author={song.author} 
             title={song.title}
             audioOrVideo = "audio"
@@ -54,9 +50,9 @@ function Cards() {
               <Card 
               key={song.id} 
               id = {song.id}
-              imgPath={song.imgPath} 
+              imgFileName={song.imgFileName} 
               customImg={song.customImg}
-              videoPath={song.videoPath}
+              videoFileName={song.videoFileName}
               author={song.author} 
               title={song.title}
               audioOrVideo = "video"
@@ -66,7 +62,7 @@ function Cards() {
         }
         )}
       </div>
-      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} songsPerPage={songsPerPage} />
+      <Pagination currentPage={pageNumber} setCurrentPage={setPageNumber} songsPerPage={pageSize} />
     </div>
   )
 }

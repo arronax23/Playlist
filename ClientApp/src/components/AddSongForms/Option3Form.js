@@ -17,10 +17,7 @@ function Option3Form() {
     const [author, setAuthor] = useState('');
     const [title, setTitle] = useState('');
     const [videoLink, setVideoLink] = useState('');
-    // const [videoPath, setVideoPath] = useState('');
     const customImg = true;
-    // const [imgPath, setImgPath] = useState('');
-    // const [imgLink, setImgLink] = useState('');
     const [uploadedSongId, setUploadedSongId] = useState('');
     const [errors, setErrors] = useState([]);
 
